@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../utils/AuthContext';
 import { supabase } from '../utils/supabaseClient';
 import { useNavigate } from 'react-router-dom';
-import { User, MessageSquare, ClipboardList, PenTool, ShoppingBag, LogOut, Users, Search, Image as ImageIcon } from 'lucide-react';
+import { User, MessageSquare, ClipboardList, PenTool, ShoppingBag, LogOut, Users, Search, Image as ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Dashboard = () => {
   const { user, profile, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // States for fetching lists
   const [agentList, setAgentList] = useState([]);
@@ -172,22 +173,33 @@ const Dashboard = () => {
                 />
              </div>
              {isFetchingListing ? <p>Loading clients...</p> : (
-               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-                 {filteredCustomers.map(customer => (
-                   <div key={customer.id} style={{ padding: '24px', background: 'white', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
-                        <div style={{ width: '50px', height: '50px', background: '#f3f4f6', color: 'var(--color-black)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}>
-                          {customer.full_name?.charAt(0) || 'C'}
-                        </div>
-                        <div>
-                          <h3 style={{ fontSize: '1.1rem', margin: 0 }}>{customer.full_name}</h3>
-                          <span style={{ fontSize: '0.85rem', color: 'var(--color-gray)' }}>{customer.email}</span>
-                        </div>
-                      </div>
-                      <button onClick={() => navigate(`/chat/${customer.id}`)} className="btn btn-primary" style={{ width: '100%', padding: '10px' }}>Message Client</button>
-                   </div>
-                 ))}
-                 {filteredCustomers.length === 0 && <p style={{fontWeight: 600, color: 'var(--color-gray)'}}>No clients matched your search query.</p>}
+               <div className="table-responsive" style={{ overflowX: 'auto' }}>
+                 <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white', borderRadius: '12px', overflow: 'hidden' }}>
+                    <thead>
+                       <tr style={{ background: 'var(--bg-light-blue)', textAlign: 'left' }}>
+                          <th style={{ padding: '16px', fontSize: '0.9rem', color: 'var(--color-gray)' }}>Client Name</th>
+                          <th style={{ padding: '16px', fontSize: '0.9rem', color: 'var(--color-gray)' }}>Email</th>
+                          <th style={{ padding: '16px', fontSize: '0.9rem', color: 'var(--color-gray)', textAlign: 'center' }}>Actions</th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                       {filteredCustomers.map(customer => (
+                         <tr key={customer.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                            <td style={{ padding: '16px', fontWeight: 600 }}>
+                               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <div style={{ width: '32px', height: '32px', background: '#f3f4f6', color: 'var(--color-black)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem' }}>{customer.full_name?.charAt(0)}</div>
+                                  {customer.full_name}
+                               </div>
+                            </td>
+                            <td style={{ padding: '16px', color: 'var(--color-gray)' }}>{customer.email}</td>
+                            <td style={{ padding: '16px', textAlign: 'center' }}>
+                               <button onClick={() => navigate(`/chat/${customer.id}`)} className="btn btn-outline" style={{ padding: '6px 14px', fontSize: '0.85rem' }}>Message</button>
+                            </td>
+                         </tr>
+                       ))}
+                    </tbody>
+                 </table>
+                 {filteredCustomers.length === 0 && <p style={{fontWeight: 600, color: 'var(--color-gray)', padding: '20px', textAlign: 'center'}}>No clients matched your search query.</p>}
                </div>
              )}
           </div>
@@ -227,7 +239,7 @@ const Dashboard = () => {
               <p style={{ color: 'var(--color-gray)', marginBottom: '30px' }}>Organize your workflow and track specific customer requirements.</p>
               
               <form onSubmit={handleAddTodo} style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginBottom: '40px', background: 'rgba(10,50,115,0.02)', padding: '24px', borderRadius: '12px' }}>
-                <div style={{ display: 'flex', gap: '15px' }}>
+                <div className="dash-todo-form-row" style={{ display: 'flex', gap: '15px' }}>
                   <input 
                     type="text" 
                     placeholder="Task Title (e.g. Design Logo for Client X)" 
@@ -428,18 +440,18 @@ const Dashboard = () => {
                 </div>
               ) : (
                 inboxUsers.map(u => (
-                  <div key={u.id} className="glass-card card-hover" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px', background: 'white' }}>
+                  <div key={u.id} className="glass-card card-hover message-hub-item" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px', background: 'white', gap: '15px' }}>
                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                       <div style={{ width: '50px', height: '50px', background: 'var(--primary-orange)', color: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}>
+                       <div style={{ width: '50px', height: '50px', background: 'var(--primary-orange)', color: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold', flexShrink: 0 }}>
                          {u.full_name?.charAt(0)}
                        </div>
-                       <div>
-                         <h3 style={{ margin: 0, fontSize: '1.2rem' }}>{u.full_name}</h3>
-                         <span style={{ fontSize: '0.85rem', color: 'var(--color-gray)', textTransform: 'capitalize' }}>{u.role}</span>
+                       <div style={{ overflow: 'hidden' }}>
+                         <h3 style={{ margin: 0, fontSize: '1.1rem', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{u.full_name}</h3>
+                         <span style={{ fontSize: '0.8rem', color: 'var(--color-gray)', textTransform: 'capitalize' }}>{u.role}</span>
                        </div>
                      </div>
-                     <button onClick={() => navigate(`/chat/${u.id}`)} className="btn btn-primary" style={{ padding: '10px 20px', display: 'flex', gap: '8px' }}>
-                       <MessageSquare size={16} /> Open Chat
+                     <button onClick={() => navigate(`/chat/${u.id}`)} className="btn btn-primary" style={{ padding: '8px 16px', display: 'flex', gap: '8px', fontSize: '0.9rem', flexShrink: 0 }}>
+                       <MessageSquare size={16} /> <span className="hide-mobile">Open Chat</span>
                      </button>
                   </div>
                 ))
@@ -455,29 +467,50 @@ const Dashboard = () => {
   return (
     <div style={{ display: 'flex', minHeight: 'calc(100vh - 80px)', background: 'var(--bg-light-blue)', flexDirection: 'row' }} className="dashboard-layout">
       {/* Side Panel Sidebar (Only on Desktop) */}
-      <aside className="dashboard-sidebar" style={{ width: '280px', background: 'white', borderRight: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', boxShadow: '2px 0 10px rgba(0,0,0,0.02)' }}>
-        <div style={{ padding: '40px 24px', borderBottom: '1px solid var(--border-color)', background: 'var(--primary-blue)', color: 'white' }}>
-          <h2 style={{ fontSize: '1.4rem', margin: 0 }}>{isAgent ? 'Agent Portal' : 'Client Portal'}</h2>
+      <aside className={`dashboard-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`} style={{ width: sidebarCollapsed ? '80px' : '280px', background: 'white', borderRight: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', boxShadow: '2px 0 10px rgba(0,0,0,0.02)', transition: 'width 0.3s ease' }}>
+        <div style={{ padding: '40px 24px', borderBottom: '1px solid var(--border-color)', background: 'var(--primary-blue)', color: 'white', overflow: 'hidden', whiteSpace: 'nowrap', position: 'relative' }}>
+          {!sidebarCollapsed && <h2 style={{ fontSize: '1.4rem', margin: 0 }}>{isAgent ? 'Agent Portal' : 'Client Portal'}</h2>}
+          <button 
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            style={{ 
+              position: 'absolute', right: sidebarCollapsed ? '50%' : '15px', transform: sidebarCollapsed ? 'translateX(50%)' : 'none',
+              top: '50%', transform: sidebarCollapsed ? 'translate(50%, -50%)' : 'translateY(-50%)',
+              background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', padding: '6px', borderRadius: '6px', cursor: 'pointer'
+            }}
+          >
+            {sidebarCollapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
+          </button>
         </div>
-        <nav style={{ flex: 1, padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <nav style={{ flex: 1, padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '10px', overflow: 'hidden' }}>
            {menuItems.map(item => (
             <button 
               key={item.id}
               onClick={() => setActiveTab(item.id)}
+              title={sidebarCollapsed ? item.label : ''}
               style={{
                 display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '14px 20px', 
                 borderRadius: '12px', cursor: 'pointer', outline: 'none', transition: 'all 0.2s',
                 background: activeTab === item.id ? 'var(--primary-blue)' : 'transparent',
                 color: activeTab === item.id ? 'white' : 'var(--color-gray)',
                 border: 'none', textAlign: 'left', fontWeight: 600, fontSize: '1.05rem',
-                boxShadow: activeTab === item.id ? '0 4px 12px rgba(10,50,115,0.2)' : 'none'
+                boxShadow: activeTab === item.id ? '0 4px 12px rgba(10,50,115,0.2)' : 'none',
+                overflow: 'hidden'
               }}
             >
-              {item.label}
+              <div style={{ flexShrink: 0 }}>
+                {item.id === 'profile' && <User size={20} />}
+                {item.id === 'todo' && <ClipboardList size={20} />}
+                {item.id === 'customers' && <Users size={20} />}
+                {item.id === 'agents' && <Users size={20} />}
+                {item.id === 'post-blog' && <PenTool size={20} />}
+                {item.id === 'services' && <ShoppingBag size={20} />}
+                {item.id === 'chat' && <MessageSquare size={20} />}
+              </div>
+              {!sidebarCollapsed && <span style={{ whiteSpace: 'nowrap' }}>{item.label}</span>}
             </button>
           ))}
-          <button onClick={() => signOut()} style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '14px 20px', background: 'rgba(239, 68, 68, 0.05)', color: '#ef4444', border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: 600 }}>
-             <LogOut size={18} /> Logout
+          <button onClick={() => signOut()} style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '14px 20px', background: 'rgba(239, 68, 68, 0.05)', color: '#ef4444', border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: 600, overflow: 'hidden' }}>
+             <LogOut size={18} style={{ flexShrink: 0 }} /> {!sidebarCollapsed && <span style={{ whiteSpace: 'nowrap' }}>Logout</span>}
           </button>
         </nav>
       </aside>
@@ -543,6 +576,12 @@ const Dashboard = () => {
           .dash-todo-grid { 
             grid-template-columns: 1fr !important;
           }
+          .dash-todo-form-row {
+            flex-direction: column !important;
+          }
+          /* Message Hub containment */
+          .message-hub-item { padding: 16px !important; }
+          .hide-mobile { display: none; }
         }
       `}</style>
     </div>

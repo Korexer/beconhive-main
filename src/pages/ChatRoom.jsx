@@ -202,10 +202,10 @@ const ChatRoom = () => {
   }
 
   return (
-    <div style={{ background: 'var(--bg-light-blue)', minHeight: 'calc(100vh - 80px)', padding: '40px 0' }}>
+    <div className="chat-room-page" style={{ background: 'var(--bg-light-blue)', minHeight: 'calc(100vh - 80px)', padding: '40px 0' }}>
       <div className="container" style={{ maxWidth: '800px' }}>
         
-        <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', height: '75vh', borderRadius: '16px', overflow: 'hidden' }}>
+        <div className="glass-card chat-main-container" style={{ display: 'flex', flexDirection: 'column', height: '75vh', borderRadius: '16px', overflow: 'hidden' }}>
           {/* Chat Header */}
           <div style={{ padding: '20px', background: 'white', borderBottom: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '15px' }}>
             <button onClick={() => navigate('/dashboard')} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex' }}>
@@ -228,7 +228,7 @@ const ChatRoom = () => {
               messages.map(msg => {
                 const isMe = msg.sender_id === user.id;
                 return (
-                  <div key={msg.id} style={{ alignSelf: isMe ? 'flex-end' : 'flex-start', maxWidth: '75%', display: 'flex', flexDirection: 'column' }}>
+                  <div key={msg.id} style={{ alignSelf: isMe ? 'flex-end' : 'flex-start', maxWidth: '85%', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ 
                       padding: '12px 18px', 
                       background: isMe ? 'var(--primary-blue)' : 'white', 
@@ -236,7 +236,8 @@ const ChatRoom = () => {
                       borderRadius: isMe ? '20px 20px 0 20px' : '20px 20px 20px 0',
                       boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
                       border: isMe ? 'none' : '1px solid var(--border-color)',
-                      wordBreak: 'break-word'
+                      wordBreak: 'break-word',
+                      overflowWrap: 'anywhere'
                     }}>
                       
                       {msg.type === 'image' ? (
@@ -250,7 +251,7 @@ const ChatRoom = () => {
                            <small style={{ opacity: 0.8, marginTop: '4px' }}>Voice Note</small>
                         </div>
                       ) : (
-                        <p style={{ margin: 0, color: 'inherit' }}>{msg.content}</p>
+                        <p style={{ margin: 0, color: 'inherit', fontSize: '1rem', lineHeight: '1.5' }}>{msg.content}</p>
                       )}
                       
                     </div>
@@ -265,21 +266,21 @@ const ChatRoom = () => {
           </div>
 
           {/* Chat Input */}
-          <div style={{ padding: '20px', background: 'white', borderTop: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="chat-input-area" style={{ padding: '20px', background: 'white', borderTop: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '10px' }}>
             
-            <label style={{ cursor: 'pointer', display: 'flex', padding: '10px', background: 'var(--bg-light-blue)', borderRadius: '50%', color: 'var(--primary-blue)', transition: '0.2s' }}>
+            <label style={{ cursor: 'pointer', display: 'flex', padding: '10px', background: 'var(--bg-light-blue)', borderRadius: '50%', color: 'var(--primary-blue)', transition: '0.2s', flexShrink: 0 }}>
               <ImageIcon size={20} />
               <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
             </label>
 
-            {isRecording ? (
-              <button type="button" onClick={stopRecording} style={{ cursor: 'pointer', display: 'flex', padding: '10px', background: '#FEE2E2', borderRadius: '50%', color: '#DC2626', border: 'none', transition: '0.2s' }} title="Stop Recording">
-                <StopCircle size={20} className="animate-pulse" />
-              </button>
+            {!isRecording ? (
+               <button type="button" onClick={startRecording} style={{ cursor: 'pointer', display: 'flex', padding: '10px', background: 'var(--bg-light-blue)', borderRadius: '50%', color: 'var(--primary-orange)', border: 'none', transition: '0.2s', flexShrink: 0 }} title="Start Voice Recording">
+                 <Mic size={20} />
+               </button>
             ) : (
-              <button type="button" onClick={startRecording} style={{ cursor: 'pointer', display: 'flex', padding: '10px', background: 'var(--bg-light-blue)', borderRadius: '50%', color: 'var(--primary-orange)', border: 'none', transition: '0.2s' }} title="Start Voice Recording">
-                <Mic size={20} />
-              </button>
+               <button type="button" onClick={stopRecording} style={{ cursor: 'pointer', display: 'flex', padding: '10px', background: '#FEE2E2', borderRadius: '50%', color: '#DC2626', border: 'none', transition: '0.2s', flexShrink: 0 }} title="Stop Recording">
+                 <StopCircle size={20} className="animate-pulse" />
+               </button>
             )}
 
             <form onSubmit={handleSendText} style={{ flex: 1, display: 'flex', gap: '10px' }}>
@@ -288,15 +289,22 @@ const ChatRoom = () => {
                  onChange={(e) => setInputText(e.target.value)}
                  type="text" 
                  placeholder="Type a message..." 
-                 style={{ flex: 1, padding: '12px 20px', borderRadius: '24px', border: '1px solid var(--border-color)', outline: 'none', background: 'var(--bg-light-blue)', fontSize: '1rem' }} 
+                 style={{ flex: 1, padding: '12px 18px', borderRadius: '24px', border: '1px solid var(--border-color)', outline: 'none', background: 'var(--bg-light-blue)', fontSize: '0.95rem', minWidth: 0 }} 
                />
-               <button type="submit" disabled={!inputText.trim()} style={{ background: 'var(--primary-blue)', color: 'white', border: 'none', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: inputText.trim() ? 'pointer' : 'default', opacity: inputText.trim() ? 1 : 0.5, transition: '0.2s' }}>
+               <button type="submit" disabled={!inputText.trim()} style={{ background: 'var(--primary-blue)', color: 'white', border: 'none', borderRadius: '50%', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: inputText.trim() ? 'pointer' : 'default', opacity: inputText.trim() ? 1 : 0.5, transition: '0.2s', flexShrink: 0 }}>
                  <Send size={18} />
                </button>
             </form>
           </div>
         </div>
       </div>
+      <style>{`
+        @media (max-width: 767px) {
+          .chat-room-page { padding: 0 !important; }
+          .chat-main-container { height: calc(100vh - 80px) !important; border-radius: 0 !important; }
+          .chat-input-area { padding: 12px !important; }
+        }
+      `}</style>
     </div>
   );
 };
