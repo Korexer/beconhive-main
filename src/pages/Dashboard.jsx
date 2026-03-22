@@ -111,11 +111,11 @@ const Dashboard = () => {
         return (
           <div className="glass-card" style={{ padding: '40px' }}>
             <h2 style={{ fontSize: '1.8rem', marginBottom: '30px' }}>Your Profile</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '30px', alignItems: 'center' }}>
-              <div style={{ width: '100px', height: '100px', borderRadius: '50%', background: 'var(--primary-blue)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', fontWeight: 'bold' }}>
+            <div className="profile-header-grid" style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '30px', alignItems: 'center' }}>
+              <div style={{ width: '100px', height: '100px', borderRadius: '50%', background: 'var(--primary-blue)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', fontWeight: 'bold', margin: '0 auto' }}>
                 {profile.full_name?.charAt(0) || 'U'}
               </div>
-              <div>
+              <div className="profile-info-text">
                 <h3 style={{ fontSize: '1.8rem', marginBottom: '8px' }}>{profile.full_name}</h3>
                 <p style={{ color: 'var(--color-gray)', marginBottom: '8px', fontSize: '1.1rem' }}><strong>Email:</strong> {user.email}</p>
                 <p style={{ color: 'var(--color-gray)', marginBottom: '20px', fontSize: '1.1rem' }}><strong>Account Type:</strong> <span style={{ textTransform: 'capitalize', color: 'var(--primary-orange)', fontWeight: 600 }}>{profile.role}</span></p>
@@ -221,7 +221,7 @@ const Dashboard = () => {
         };
 
         return (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '30px' }}>
+          <div className="dash-todo-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '30px' }}>
             <div className="glass-card" style={{ padding: '40px' }}>
               <h2 style={{ fontSize: '1.8rem', marginBottom: '10px' }}>Agent Task Center</h2>
               <p style={{ color: 'var(--color-gray)', marginBottom: '30px' }}>Organize your workflow and track specific customer requirements.</p>
@@ -338,17 +338,17 @@ const Dashboard = () => {
                 </button>
              </div>
              
-             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+             <div className="dash-list-grid" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {isFetchingListing ? <p>Loading articles...</p> : agentBlogs.length === 0 ? (
                   <div style={{ padding: '40px', background: 'rgba(10,50,115,0.02)', border: '2px dashed var(--border-color)', borderRadius: '16px', textAlign: 'center', color: 'var(--color-gray)' }}>
                      You haven't published any articles yet. Click "Create New Post" to start writing!
                   </div>
                 ) : (
                   agentBlogs.map(blog => (
-                    <div key={blog.id} className="glass-card" style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '20px', background: 'white', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
+                    <div key={blog.id} className="dash-blog-card glass-card" style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '20px', background: 'white', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
                        {blog.image_url ? 
-                         <img src={blog.image_url} alt="Cover" style={{ width: '120px', height: '80px', objectFit: 'cover', borderRadius: '8px' }} /> :
-                         <div style={{ width: '120px', height: '80px', background: 'var(--bg-light-blue)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><ImageIcon color="var(--color-gray)" /></div>
+                         <img src={blog.image_url} alt="Cover" style={{ width: '120px', height: '80px', objectFit: 'cover', borderRadius: '8px', flexShrink: 0 }} /> :
+                         <div style={{ width: '120px', height: '80px', background: 'var(--bg-light-blue)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><ImageIcon color="var(--color-gray)" /></div>
                        }
                        <div style={{ flex: 1 }}>
                           <h3 style={{ fontSize: '1.2rem', marginBottom: '6px' }}>{blog.title || 'Untitled Post'}</h3>
@@ -388,7 +388,7 @@ const Dashboard = () => {
                 <button onClick={() => navigate('/services')} className="btn btn-secondary">Browse BeconHive Services</button>
               </div>
             ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px', marginTop: '20px' }}>
+              <div className="dash-list-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px', marginTop: '20px' }}>
                 {orderedServices.map((order) => (
                    <div key={order.id} className="glass-card" style={{ padding: '24px', border: '1px solid var(--border-color)', borderRadius: '16px', background: 'white' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -515,12 +515,34 @@ const Dashboard = () => {
           .mobile-dashboard-tabs { display: flex !important; }
           .dashboard-main { padding: 20px 16px !important; }
           
+          /* Profile Component Stacking */
+          .profile-header-grid { 
+            grid-template-columns: 1fr !important; 
+            text-align: center;
+            gap: 20px !important;
+          }
+          .profile-info-text h3 { font-size: 1.4rem !important; }
+          .profile-info-text p { font-size: 0.95rem !important; }
+
+          /* Service & List Grid Adjustments */
+          .dash-list-grid {
+             grid-template-columns: 1fr !important;
+          }
+          .dash-blog-card {
+             flex-direction: column !important;
+             align-items: flex-start !important;
+             text-align: left;
+          }
+          .dash-blog-card img, .dash-blog-card div[style*="width: 120px"] {
+             width: 100% !important;
+             height: 180px !important;
+          }
+
           /* Specific Tab Grid Fixes for Mobile */
-          .dashboard-main .glass-card { padding: 24px !important; }
-          .dashboard-main > div > div[style*="grid-template-columns: 1fr 350px"] { 
+          .dashboard-main .glass-card { padding: 20px !important; }
+          .dash-todo-grid { 
             grid-template-columns: 1fr !important;
           }
-          .dashboard-main h2 { font-size: 1.5rem !important; }
         }
       `}</style>
     </div>
