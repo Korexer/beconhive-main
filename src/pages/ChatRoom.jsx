@@ -283,22 +283,29 @@ const ChatRoom = () => {
                </button>
             )}
 
-            <form onSubmit={handleSendText} style={{ flex: 1, display: 'flex', gap: '12px' }}>
-               <input 
+            <form onSubmit={handleSendText} style={{ flex: 1, display: 'flex', gap: '8px', alignItems: 'flex-end' }}>
+               <textarea 
                  value={inputText}
                  onChange={(e) => setInputText(e.target.value)}
-                 type="text" 
-                 placeholder="Type your message here..." 
+                 onKeyDown={(e) => {
+                   if (e.key === 'Enter' && !e.shiftKey) {
+                     e.preventDefault();
+                     handleSendText(e);
+                   }
+                 }}
+                 placeholder="Type your message..." 
+                 rows="2"
                  style={{ 
-                   flex: 1, padding: '16px 24px', borderRadius: '30px', 
+                   flex: 1, padding: '12px 16px', borderRadius: '8px', 
                    border: '1px solid var(--border-color)', outline: 'none', 
-                   background: 'var(--bg-light-blue)', fontSize: '1.05rem', 
-                   minWidth: 0, boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)' 
+                   background: 'var(--bg-light-blue)', fontSize: '1rem', 
+                   minWidth: 0, resize: 'none', height: '60px',
+                   boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)' 
                  }} 
                />
                <button type="submit" disabled={!inputText.trim()} style={{ 
                  background: 'var(--primary-blue)', color: 'white', border: 'none', 
-                 borderRadius: '30px', padding: '0 24px', height: '54px', 
+                 borderRadius: '8px', width: '50px', height: '60px', 
                  display: 'flex', alignItems: 'center', justifyContent: 'center', 
                  cursor: inputText.trim() ? 'pointer' : 'default', 
                  opacity: inputText.trim() ? 1 : 0.6, 
@@ -315,7 +322,8 @@ const ChatRoom = () => {
         @media (max-width: 767px) {
           .chat-room-page { padding: 0 !important; }
           .chat-main-container { height: calc(100vh - 80px) !important; border-radius: 0 !important; }
-          .chat-input-area { padding: 12px !important; }
+          .chat-input-area { padding: 10px !important; gap: 6px !important; }
+          .chat-input-area label, .chat-input-area button[type="button"] { padding: 8px !important; }
         }
       `}</style>
     </div>
