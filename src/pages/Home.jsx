@@ -66,32 +66,32 @@ const Home = () => {
 
       {/* Intro Section */}
       <section className="section-padding">
-        <div className="container">
-          <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto', marginBottom: '80px' }}>
+        <div className="container" style={{ padding: '0 16px' }}>
+          <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto', marginBottom: '60px' }}>
             <h2 style={{ fontSize: '2.5rem', marginBottom: '24px' }}>Expert Solutions for Established Businesses and Entrepreneurs</h2>
-            <p>At BeconHive, we specialize in delivering top-tier business solutions to visionary entrepreneurs and companies worldwide. Whether you need a winning business plan, a compelling pitch deck, or branding that stands out, our team of professionals is here to make it happen. With over a decade of experience, we’re committed to helping you achieve your goals quickly and affordably.</p>
+            <p>At BeconHive, we specialize in delivering top-tier business solutions to visionary entrepreneurs and companies worldwide. Whether you need a winning business plan, a compelling pitch deck, or branding that stands out, our team of professionals is here to make it happen.</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
-            <div className="glass-card card-hover" style={{ padding: '40px' }}>
+          <div className="mobile-horizontal-scroll" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '30px' }}>
+            <div className="glass-card card-hover" style={{ padding: '32px' }}>
               <div style={{ width: '60px', height: '60px', background: 'rgba(10, 50, 115, 0.1)', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-blue)', marginBottom: '24px' }}>
                 <CheckCircle size={32} />
               </div>
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '16px' }}>Industry Expertise</h3>
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '12px' }}>Industry Expertise</h3>
               <p>Over a decade of experience crafting solutions for 350+ industries worldwide.</p>
             </div>
-            <div className="glass-card card-hover" style={{ padding: '40px' }}>
+            <div className="glass-card card-hover" style={{ padding: '32px' }}>
               <div style={{ width: '60px', height: '60px', background: 'rgba(255, 106, 0, 0.1)', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-orange)', marginBottom: '24px' }}>
                 <TrendingUp size={32} />
               </div>
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '16px' }}>Proven Funding Success</h3>
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '12px' }}>Proven Funding Success</h3>
               <p>We’ve helped clients secure millions in equity and debt financing for growth.</p>
             </div>
-            <div className="glass-card card-hover" style={{ padding: '40px' }}>
+            <div className="glass-card card-hover" style={{ padding: '32px' }}>
               <div style={{ width: '60px', height: '60px', background: 'rgba(10, 50, 115, 0.1)', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary-blue)', marginBottom: '24px' }}>
                 <BarChart3 size={32} />
               </div>
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '16px' }}>Comprehensive Solutions</h3>
+              <h3 style={{ fontSize: '1.4rem', marginBottom: '12px' }}>Comprehensive Solutions</h3>
               <p>From business plans to branding, we offer a full range of tailored services.</p>
             </div>
           </div>
@@ -102,10 +102,10 @@ const Home = () => {
       <section style={{ padding: '100px 0', background: 'var(--color-black)', color: 'var(--color-white)' }}>
         <div className="container">
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '60px', alignItems: 'center' }}>
-            <div style={{ flex: '1 1 500px' }}>
+            <div className="mobile-centered-stack" style={{ flex: '1 1 500px' }}>
               <h2 style={{ fontSize: '2.5rem', color: 'var(--color-white)', marginBottom: '20px' }}>Satisfied Customers</h2>
               <p style={{ color: '#94a3b8', fontSize: '1.2rem', marginBottom: '40px' }}>
-                Join the ranks of our delighted clients who have successfully achieved their business goals with our expert services. We build trust by delivering breathtaking results.
+                Join the ranks of our delighted clients who have successfully achieved their business goals. We build trust by delivering breathtaking results.
               </p>
               <div style={{ background: 'rgba(255,255,255,0.05)', padding: '40px 60px', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.1)', display: 'inline-block' }}>
                 <AnimatedCounter end={2500} step={10} />
@@ -123,43 +123,39 @@ const Home = () => {
       {/* Case Studies Section */}
       <section className="section-padding bg-light">
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
             <h2 style={{ fontSize: '2.5rem' }}>Success Stories</h2>
-            <p>BeconHive delivering tailored solutions that drive business growth.</p>
+            <p>Tailored solutions that drive business growth.</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '40px' }}>
-            
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '30px' }}>
             {/* Case Study 1 */}
             <div className="glass-card" style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ height: '240px', background: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
-               <h3 style={{ color: 'white', fontSize: '2rem', textAlign: 'center' }}>Tech Startup Secures $500k</h3>
+              <div style={{ height: '200px', background: 'var(--primary-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                 <h3 style={{ color: 'white', fontSize: '1.6rem', textAlign: 'center' }}>Tech Startup Secures $500k</h3>
               </div>
-              <div style={{ padding: '40px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ fontSize: '1.5rem', marginBottom: '16px' }}>Startup Business Secures Funding</h3>
-                <p style={{ marginBottom: '20px' }}><strong>The Challenge:</strong> A tech startup was struggling to secure investor funding due to a poorly structured business plan and an unconvincing pitch deck. They needed $500,000 in funding.</p>
-                <p style={{ marginBottom: '20px' }}><strong>BeconHive’s Solution:</strong> We created a comprehensive business plan highlighting its innovative product and potential for growth, along with a compelling pitch deck.</p>
-                <div style={{ marginTop: 'auto', padding: '20px', background: 'var(--bg-light-blue)', borderRadius: '12px', borderLeft: '4px solid var(--primary-orange)' }}>
-                  <strong>Result:</strong> Within three months, the startup secured $500,000 in funding. They successfully launched their product and are now scaling.
+              <div style={{ padding: '30px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ fontSize: '1.3rem', marginBottom: '12px' }}>Startup Funding Success</h3>
+                <p style={{ marginBottom: '16px', fontSize: '0.95rem' }}><strong>Challenge:</strong> Tech startup needed $500,000 but lacked a convincing strategy and pitch deck.</p>
+                <div style={{ marginTop: 'auto', padding: '20px', background: 'var(--bg-white)', borderRadius: '12px', borderLeft: '4px solid var(--primary-orange)' }}>
+                  <strong>Result:</strong> Secured $500,000 in funding within 3 months and successfully scaled.
                 </div>
               </div>
             </div>
 
             {/* Case Study 2 */}
             <div className="glass-card" style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ height: '240px', background: 'var(--primary-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px' }}>
-                <h3 style={{ color: 'white', fontSize: '2rem', textAlign: 'center' }}>Retail Brand Traffic Up 40%</h3>
+              <div style={{ height: '200px', background: 'var(--primary-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                <h3 style={{ color: 'white', fontSize: '1.6rem', textAlign: 'center' }}>Retail Traffic Up 40%</h3>
               </div>
-              <div style={{ padding: '40px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ fontSize: '1.5rem', marginBottom: '16px' }}>Small Business Game-Changing Branding</h3>
-                <p style={{ marginBottom: '20px' }}><strong>The Challenge:</strong> A small retail business wanted to refresh its branding and create a professional online presence but lacked the cohesive strategy.</p>
-                <p style={{ marginBottom: '20px' }}><strong>BeconHive’s Solution:</strong> We provided a full branding package: a modern logo, responsive WordPress website, and an ongoing social media management strategy.</p>
-                <div style={{ marginTop: 'auto', padding: '20px', background: 'var(--bg-light-blue)', borderRadius: '12px', borderLeft: '4px solid var(--primary-blue)' }}>
-                  <strong>Result:</strong> Website traffic increased 40% in two months. Social media following grew by 150%, leading to higher sales and brand visibility.
+              <div style={{ padding: '30px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ fontSize: '1.3rem', marginBottom: '12px' }}>Global Branding Results</h3>
+                <p style={{ marginBottom: '16px', fontSize: '0.95rem' }}><strong>Challenge:</strong> Small retail brand wanted a cohesive strategy and professional online presence.</p>
+                <div style={{ marginTop: 'auto', padding: '20px', background: 'var(--bg-white)', borderRadius: '12px', borderLeft: '4px solid var(--primary-blue)' }}>
+                  <strong>Result:</strong> Traffic increased 40% and social following grew 150% in 60 days.
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>

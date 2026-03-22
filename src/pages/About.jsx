@@ -27,11 +27,11 @@ const About = () => {
       {/* intro */}
       <section className="section-padding">
         <div className="container">
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '60px', alignItems: 'center' }}>
+          <div className="mobile-centered-stack" style={{ display: 'flex', flexWrap: 'wrap', gap: '60px', alignItems: 'center' }}>
             <div style={{ flex: '1 1 500px' }}>
               <h2 style={{ fontSize: '2.5rem', marginBottom: '24px' }}>About BeconHive</h2>
               <p style={{ marginBottom: '20px' }}>
-                Beconhive is a professional service provider specializing in business plan writing, pitch decks, grant proposals, landing pages, Social Media Management, Branding, Digital Video Creation, WordPress Web Dev, logo design, business cards, transcription, captioning, and trainings, and lot more. 
+                Beconhive is a professional service provider specializing in business plan writing, pitch decks, grant proposals, and much more.
               </p>
               <p>
                 With a dedicated team of professionals, we’ve built our reputation on helping businesses across the globe achieve their growth goals efficiently and affordably.
@@ -105,7 +105,7 @@ const About = () => {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px' }}>
+          <div className="mobile-horizontal-scroll" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px' }}>
             <div className="glass-card card-hover" style={{ padding: '40px' }}>
               <h3 style={{ fontSize: '1.5rem', marginBottom: '16px', color: 'var(--primary-blue)' }}>Professional Writers</h3>
               <p>Our team of expert business plan writers brings extensive industry experience. We’ve conducted research in over 350 industries and are well-versed in crafting custom business plans.</p>

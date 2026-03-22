@@ -5,8 +5,8 @@ const Footer = () => {
   return (
     <footer style={{ background: '#04142D', color: 'white', padding: '60px 0 20px', marginTop: 'auto' }}>
       <div className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px', marginBottom: '40px' }}>
-          <div>
+        <div className="footer-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '40px', marginBottom: '40px' }}>
+          <div className="mobile-centered-stack">
             <h3 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'white' }}>
               Becon<span style={{ color: 'var(--primary-orange)' }}>Hive</span>
             </h3>
@@ -14,7 +14,7 @@ const Footer = () => {
               Efficient, affordable, and expert services tailored to help your business thrive.
             </p>
           </div>
-          <div>
+          <div className="mobile-centered-stack">
             <h4 style={{ marginBottom: '20px', color: 'white' }}>Quick Links</h4>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <li><Link to="/about" style={{ color: 'rgba(255,255,255,0.85)' }}>About Us</Link></li>
@@ -23,14 +23,14 @@ const Footer = () => {
               <li><Link to="/contact" style={{ color: 'rgba(255,255,255,0.85)' }}>Contact</Link></li>
             </ul>
           </div>
-          <div>
+          <div className="mobile-centered-stack">
             <h4 style={{ marginBottom: '20px', color: 'white' }}>Legal</h4>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <li><Link to="/terms" style={{ color: 'rgba(255,255,255,0.85)' }}>Terms of Service</Link></li>
               <li><Link to="/privacy" style={{ color: 'rgba(255,255,255,0.85)' }}>Privacy Policy</Link></li>
             </ul>
           </div>
-          <div>
+          <div className="mobile-centered-stack">
             <h4 style={{ marginBottom: '20px', color: 'white' }}>Contact Us</h4>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px', color: 'rgba(255,255,255,0.85)' }}>
               <li>Email: info@beconhive.com</li>

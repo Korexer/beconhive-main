@@ -140,10 +140,54 @@ main > * {
   background-color: var(--bg-light-blue);
 }
 
-/* Gradient text emphasis */
-.text-gradient {
-  background: linear-gradient(135deg, var(--primary-blue), var(--primary-orange));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* Responsive System - Only impacts Mobile/Tablet views */
+@media (max-width: 991px) {
+  .section-padding {
+    padding: 60px 0;
+  }
+  
+  .container {
+    padding: 0 16px;
+  }
+  
+  /* Horizontal scroll for services/categories (Fiverr-like) */
+  .mobile-horizontal-scroll {
+    display: flex !important;
+    overflow-x: auto !important;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    gap: 16px;
+    padding: 10px 4px 20px 4px;
+    margin: 0 -16px; /* Bleed out of container */
+    padding-left: 16px;
+    padding-right: 16px;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .mobile-horizontal-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .mobile-horizontal-scroll > * {
+    flex: 0 0 calc(100% - 60px); /* Show one full card and a peek of the next */
+    scroll-snap-align: start;
+  }
+  
+  /* Centered stack for simpler layouts */
+  .mobile-centered-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  /* Typography Scaling */
+  h1 { font-size: 2.5rem !important; line-height: 1.2; }
+  h2 { font-size: 1.8rem !important; line-height: 1.2; }
+  h3 { font-size: 1.4rem !important; }
+}
+
+@media (max-width: 576px) {
+  h1 { font-size: 2rem !important; }
+  .btn { width: 100%; } /* Standard full-width buttons on small phones */
 }

@@ -75,10 +75,51 @@ const Navbar = () => {
         <button 
           className="mobile-toggle"
           onClick={() => setIsOpen(!isOpen)}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'none', color: 'white' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'none', color: 'white', transition: 'transform 0.3s' }}
         >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
+          {isOpen ? <X size={32} /> : <Menu size={32} />}
         </button>
+      </div>
+
+      {/* Mobile Drawer Overlay */}
+      <div 
+        style={{
+          position: 'fixed',
+          top: '80px',
+          left: 0,
+          width: '100%',
+          height: 'calc(100vh - 80px)',
+          background: 'rgba(4, 20, 45, 0.98)',
+          backdropFilter: 'blur(20px)',
+          zIndex: 999,
+          display: isOpen ? 'flex' : 'none',
+          flexDirection: 'column',
+          padding: '40px 20px',
+          transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)'
+        }}
+        className="mobile-drawer"
+      >
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '30px', alignItems: 'center', width: '100%' }}>
+          <Link to="/" onClick={() => setIsOpen(false)} style={{ fontSize: '1.5rem', fontWeight: 600 }}>Home</Link>
+          <Link to="/about" onClick={() => setIsOpen(false)} style={{ fontSize: '1.5rem', fontWeight: 600 }}>About Us</Link>
+          <Link to="/services" onClick={() => setIsOpen(false)} style={{ fontSize: '1.5rem', fontWeight: 600 }}>Services</Link>
+          <Link to="/blog" onClick={() => setIsOpen(false)} style={{ fontSize: '1.5rem', fontWeight: 600 }}>Blog</Link>
+          <Link to="/contact" onClick={() => setIsOpen(false)} style={{ fontSize: '1.5rem', fontWeight: 600 }}>Contact</Link>
+          
+          <div style={{ width: '100%', height: '1px', background: 'rgba(255,255,255,0.1)', margin: '10px 0' }} />
+          
+          {user ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', alignItems: 'center' }}>
+               <Link to="/dashboard" onClick={() => setIsOpen(false)} className="btn btn-secondary" style={{ width: '100%', padding: '16px' }}>Go to Dashboard</Link>
+               <button onClick={() => { handleLogout(); setIsOpen(false); }} style={{ background: 'transparent', border: 'none', color: 'white', fontWeight: 600, fontSize: '1.1rem' }}>Logout Account</button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', alignItems: 'center' }}>
+               <Link to="/login" onClick={() => setIsOpen(false)} style={{ fontSize: '1.3rem', fontWeight: 600 }}>Login</Link>
+               <Link to="/signup" onClick={() => setIsOpen(false)} className="btn btn-secondary" style={{ width: '100%', padding: '16px' }}>Sign Up Free</Link>
+            </div>
+          )}
+        </nav>
       </div>
 
       <style>{`
