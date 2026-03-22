@@ -45,6 +45,7 @@ const Signup = () => {
       if (functionError) throw functionError;
       
       // Proceed to Step 2
+      setVerificationCode(''); // Ensure code input is empty when entering step 2
       setStep(2);
     } catch (err) {
       console.error(err);
@@ -59,15 +60,17 @@ const Signup = () => {
     setLoading(true);
     setError(null);
 
-    if (verificationCode !== generatedCode) {
-      setError("Invalid or incorrect verification code.");
+    // Sanitize input (trim spaces)
+    const enteredCode = verificationCode.trim();
+
+    if (enteredCode !== generatedCode) {
+      setError("Invalid or incorrect verification code. Please check your email again.");
       setLoading(false);
       return;
     }
 
     try {
       // Correct verification code, proceed to create user account
-      // Ensure "Confirm Email" is OFF in the Supabase Auth settings to enable auto-login
       const { data, error: signUpError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -139,11 +142,21 @@ const Signup = () => {
              
              {error && <div style={{ background: '#FEE2E2', color: '#DC2626', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '0.9rem' }}>{error}</div>}
 
-             <form onSubmit={handleStep2Submit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-               <div>
-                  <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>Verification Code <span style={{ color: 'red' }}>*</span></label>
-                  <input type="text" name="otp_code_beconhive" autoComplete="one-time-code" maxLength={6} required onChange={(e) => setVerificationCode(e.target.value)} style={{ width: '100%', padding: '14px', borderRadius: '8px', border: '2px solid var(--primary-orange)', outline: 'none', textAlign: 'center', fontSize: '1.2rem', letterSpacing: '4px' }} placeholder="000000" />
-               </div>
+              <form onSubmit={handleStep2Submit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div>
+                   <label style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>Verification Code <span style={{ color: 'red' }}>*</span></label>
+                   <input 
+                     type="text" 
+                     name="beconhive_verify_code_input" 
+                     autoComplete="off" 
+                     maxLength={6} 
+                     required 
+                     value={verificationCode}
+                     onChange={(e) => setVerificationCode(e.target.value)} 
+                     style={{ width: '100%', padding: '14px', borderRadius: '8px', border: '2px solid var(--primary-orange)', outline: 'none', textAlign: 'center', fontSize: '1.2rem', letterSpacing: '4px' }} 
+                     placeholder="000000" 
+                   />
+                </div>
                
                <button type="submit" disabled={loading} className="btn btn-secondary" style={{ width: '100%', marginTop: '10px' }}>
                   {loading ? 'Verifying...' : 'Complete Sign Up'}
