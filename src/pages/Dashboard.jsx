@@ -453,9 +453,9 @@ const Dashboard = () => {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 80px)', background: 'var(--bg-light-blue)' }}>
-      {/* Side Panel Sidebar */}
-      <aside style={{ width: '280px', background: 'white', borderRight: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', boxShadow: '2px 0 10px rgba(0,0,0,0.02)' }}>
+    <div style={{ display: 'flex', minHeight: 'calc(100vh - 80px)', background: 'var(--bg-light-blue)', flexDirection: 'row' }} className="dashboard-layout">
+      {/* Side Panel Sidebar (Only on Desktop) */}
+      <aside className="dashboard-sidebar" style={{ width: '280px', background: 'white', borderRight: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', boxShadow: '2px 0 10px rgba(0,0,0,0.02)' }}>
         <div style={{ padding: '40px 24px', borderBottom: '1px solid var(--border-color)', background: 'var(--primary-blue)', color: 'white' }}>
           <h2 style={{ fontSize: '1.4rem', margin: 0 }}>{isAgent ? 'Agent Portal' : 'Client Portal'}</h2>
         </div>
@@ -473,21 +473,56 @@ const Dashboard = () => {
                 boxShadow: activeTab === item.id ? '0 4px 12px rgba(10,50,115,0.2)' : 'none'
               }}
             >
-              <div style={{ opacity: activeTab === item.id ? 1 : 0.7 }}>
-                {item.icon}
-              </div>
               {item.label}
             </button>
           ))}
+          <button onClick={() => signOut()} style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '14px 20px', background: 'rgba(239, 68, 68, 0.05)', color: '#ef4444', border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: 600 }}>
+             <LogOut size={18} /> Logout
+          </button>
         </nav>
       </aside>
 
+      {/* Mobile-only Tab Bar (Fiverr Style) */}
+      <div className="mobile-dashboard-tabs" style={{ display: 'none', background: 'white', borderBottom: '1px solid var(--border-color)', overflowX: 'auto', padding: '12px 10px', whiteSpace: 'nowrap', gap: '10px' }}>
+         {menuItems.map(item => (
+            <button 
+               key={item.id}
+               onClick={() => setActiveTab(item.id)}
+               style={{
+                  padding: '10px 20px', borderRadius: '25px', border: 'none', fontWeight: 700,
+                  fontSize: '0.9rem', cursor: 'pointer',
+                  background: activeTab === item.id ? 'var(--primary-blue)' : 'rgba(10,50,115,0.04)',
+                  color: activeTab === item.id ? 'white' : 'var(--primary-blue)',
+                  transition: '0.2s'
+               }}
+            >
+               {item.label}
+            </button>
+         ))}
+      </div>
+
       {/* Main Content Viewport */}
-      <main style={{ flex: 1, padding: '50px 40px' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 0' }}>
+      <main className="dashboard-main" style={{ flex: 1, padding: '50px 40px', overflowX: 'hidden' }}>
+        <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
            {renderContent()}
         </div>
       </main>
+
+      <style>{`
+        @media (max-width: 991px) {
+          .dashboard-layout { flex-direction: column !important; }
+          .dashboard-sidebar { display: none !important; }
+          .mobile-dashboard-tabs { display: flex !important; }
+          .dashboard-main { padding: 20px 16px !important; }
+          
+          /* Specific Tab Grid Fixes for Mobile */
+          .dashboard-main .glass-card { padding: 24px !important; }
+          .dashboard-main > div > div[style*="grid-template-columns: 1fr 350px"] { 
+            grid-template-columns: 1fr !important;
+          }
+          .dashboard-main h2 { font-size: 1.5rem !important; }
+        }
+      `}</style>
     </div>
   );
 };

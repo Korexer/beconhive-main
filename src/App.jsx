@@ -19,9 +19,21 @@ import ChatRoom from './pages/ChatRoom';
 import Blog from './pages/Blog';
 import AgentBlogEditor from './pages/AgentBlogEditor';
 
+import { useLocation } from 'react-router-dom';
+
+// Utility component to always start at the top on route change
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+};
+
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="app-container" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <Navbar />
         <main style={{ flex: 1, marginTop: '80px' }}>

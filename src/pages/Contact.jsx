@@ -25,17 +25,16 @@ const Contact = () => {
 
       <section className="section-padding">
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '60px' }}>
+          <div className="responsive-contact-grid" style={{ display: 'flex', gap: '60px', flexDirection: 'row' }}>
             
-            {/* Contact Info */}
-            <div>
+            {/* Contact Info (Second on mobile) */}
+            <div style={{ flex: 1, order: 2 }}>
               <h2 style={{ fontSize: '2.5rem', marginBottom: '24px' }}>Let's talk about your project</h2>
               <p style={{ marginBottom: '40px' }}>We would love to hear from you! Reach out to discuss how we can help elevate your business.</p>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px', padding: '30px', background: 'var(--bg-light-blue)', borderRadius: '16px' }}>
                   <div style={{ width: '60px', height: '60px', background: 'var(--primary-orange)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px', color: 'white' }}>
-                    {/* Mail Icon Placeholder */}
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
                   </div>
                   <div>
@@ -47,13 +46,12 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* Contact Form */}
-            <div className="glass-card" style={{ padding: '40px' }}>
+            {/* Contact Form (First on mobile) */}
+            <div className="glass-card" style={{ padding: '40px', flex: 1, order: 1 }}>
               <h3 style={{ fontSize: '1.8rem', marginBottom: '24px' }}>Send us a Message</h3>
               <form 
                 onSubmit={(e) => {
                   e.preventDefault();
-                  // Dispatching to FormSubmit endpoint pointing directly to the required administrative email
                   fetch('https://formsubmit.co/ajax/info@beconhive.com', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
@@ -94,14 +92,15 @@ const Contact = () => {
                 <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '10px' }}>Submit Message</button>
               </form>
             </div>
-
           </div>
         </div>
       </section>
 
-      <style jsx>{`
-         @media (max-width: 768px) {
-           .grid-template-columns { grid-template-columns: 1fr !important; }
+      <style>{`
+         @media (max-width: 991px) {
+           .responsive-contact-grid { flex-direction: column !important; }
+           .responsive-contact-grid > div:nth-child(1) { order: 2 !important; }
+           .responsive-contact-grid > div:nth-child(2) { order: 1 !important; }
          }
       `}</style>
     </div>
