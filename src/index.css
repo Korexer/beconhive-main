@@ -2,7 +2,7 @@
 
 :root {
   --primary-blue: #0A58CA;      /* Dominant Blue */
-  --primary-orange: #FF6A00;    /* Accent Orange */
+  --primary-orange: #ed4705;    /* Accent Orange Update */
   --color-white: #FFFFFF;
   --color-black: #000000;       /* Strict text color requirement */
   
@@ -140,8 +140,8 @@ main > * {
   background-color: var(--bg-light-blue);
 }
 
-/* Responsive System - Only impacts Mobile/Tablet views */
-@media (max-width: 991px) {
+/* Responsive System - Only impacts Mobile/Handheld views (Desktop View for Tablets) */
+@media (max-width: 767px) {
   .section-padding {
     padding: 60px 0;
   }

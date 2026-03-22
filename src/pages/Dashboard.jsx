@@ -509,7 +509,7 @@ const Dashboard = () => {
       </main>
 
       <style>{`
-        @media (max-width: 991px) {
+        @media (max-width: 767px) {
           .dashboard-layout { flex-direction: column !important; }
           .dashboard-sidebar { display: none !important; }
           .mobile-dashboard-tabs { display: flex !important; }

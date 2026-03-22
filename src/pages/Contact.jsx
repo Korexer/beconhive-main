@@ -97,7 +97,7 @@ const Contact = () => {
       </section>
 
       <style>{`
-         @media (max-width: 991px) {
+         @media (max-width: 767px) {
            .responsive-contact-grid { flex-direction: column !important; }
            .responsive-contact-grid > div:nth-child(1) { order: 2 !important; }
            .responsive-contact-grid > div:nth-child(2) { order: 1 !important; }

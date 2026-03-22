@@ -123,7 +123,7 @@ const Navbar = () => {
       </div>
 
       <style>{`
-        @media (max-width: 991px) {
+        @media (max-width: 767px) {
           .desktop-nav, .nav-actions { display: none !important; }
           .mobile-toggle { display: block !important; }
         }
