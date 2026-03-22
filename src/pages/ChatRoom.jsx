@@ -266,33 +266,46 @@ const ChatRoom = () => {
           </div>
 
           {/* Chat Input */}
-          <div className="chat-input-area" style={{ padding: '20px', background: 'white', borderTop: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="chat-input-area" style={{ padding: '24px 20px', background: 'white', borderTop: '1px solid var(--border-color)', display: 'flex', alignItems: 'center', gap: '12px' }}>
             
-            <label style={{ cursor: 'pointer', display: 'flex', padding: '10px', background: 'var(--bg-light-blue)', borderRadius: '50%', color: 'var(--primary-blue)', transition: '0.2s', flexShrink: 0 }}>
-              <ImageIcon size={20} />
+            <label style={{ cursor: 'pointer', display: 'flex', padding: '12px', background: 'var(--bg-light-blue)', borderRadius: '50%', color: 'var(--primary-blue)', transition: '0.2s', flexShrink: 0 }}>
+              <ImageIcon size={22} />
               <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
             </label>
 
             {!isRecording ? (
-               <button type="button" onClick={startRecording} style={{ cursor: 'pointer', display: 'flex', padding: '10px', background: 'var(--bg-light-blue)', borderRadius: '50%', color: 'var(--primary-orange)', border: 'none', transition: '0.2s', flexShrink: 0 }} title="Start Voice Recording">
-                 <Mic size={20} />
+               <button type="button" onClick={startRecording} style={{ cursor: 'pointer', display: 'flex', padding: '12px', background: 'var(--bg-light-blue)', borderRadius: '50%', color: 'var(--primary-orange)', border: 'none', transition: '0.2s', flexShrink: 0 }} title="Start Voice Recording">
+                 <Mic size={22} />
                </button>
             ) : (
-               <button type="button" onClick={stopRecording} style={{ cursor: 'pointer', display: 'flex', padding: '10px', background: '#FEE2E2', borderRadius: '50%', color: '#DC2626', border: 'none', transition: '0.2s', flexShrink: 0 }} title="Stop Recording">
-                 <StopCircle size={20} className="animate-pulse" />
+               <button type="button" onClick={stopRecording} style={{ cursor: 'pointer', display: 'flex', padding: '12px', background: '#FEE2E2', borderRadius: '50%', color: '#DC2626', border: 'none', transition: '0.2s', flexShrink: 0 }} title="Stop Recording">
+                 <StopCircle size={22} className="animate-pulse" />
                </button>
             )}
 
-            <form onSubmit={handleSendText} style={{ flex: 1, display: 'flex', gap: '10px' }}>
+            <form onSubmit={handleSendText} style={{ flex: 1, display: 'flex', gap: '12px' }}>
                <input 
                  value={inputText}
                  onChange={(e) => setInputText(e.target.value)}
                  type="text" 
-                 placeholder="Type a message..." 
-                 style={{ flex: 1, padding: '12px 18px', borderRadius: '24px', border: '1px solid var(--border-color)', outline: 'none', background: 'var(--bg-light-blue)', fontSize: '0.95rem', minWidth: 0 }} 
+                 placeholder="Type your message here..." 
+                 style={{ 
+                   flex: 1, padding: '16px 24px', borderRadius: '30px', 
+                   border: '1px solid var(--border-color)', outline: 'none', 
+                   background: 'var(--bg-light-blue)', fontSize: '1.05rem', 
+                   minWidth: 0, boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.05)' 
+                 }} 
                />
-               <button type="submit" disabled={!inputText.trim()} style={{ background: 'var(--primary-blue)', color: 'white', border: 'none', borderRadius: '50%', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: inputText.trim() ? 'pointer' : 'default', opacity: inputText.trim() ? 1 : 0.5, transition: '0.2s', flexShrink: 0 }}>
-                 <Send size={18} />
+               <button type="submit" disabled={!inputText.trim()} style={{ 
+                 background: 'var(--primary-blue)', color: 'white', border: 'none', 
+                 borderRadius: '30px', padding: '0 24px', height: '54px', 
+                 display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                 cursor: inputText.trim() ? 'pointer' : 'default', 
+                 opacity: inputText.trim() ? 1 : 0.6, 
+                 transition: 'all 0.2s', flexShrink: 0,
+                 boxShadow: inputText.trim() ? '0 4px 12px rgba(10,88,202,0.2)' : 'none'
+               }}>
+                 <Send size={22} />
                </button>
             </form>
           </div>

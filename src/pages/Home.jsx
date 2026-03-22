@@ -136,7 +136,8 @@ const Home = () => {
               </div>
               <div style={{ padding: '30px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <h3 style={{ fontSize: '1.3rem', marginBottom: '12px' }}>Startup Funding Success</h3>
-                <p style={{ marginBottom: '16px', fontSize: '0.95rem' }}><strong>Challenge:</strong> Tech startup needed $500,000 but lacked a convincing strategy and pitch deck.</p>
+                <p style={{ marginBottom: '8px', fontSize: '0.95rem' }}><strong>Challenge:</strong> Tech startup needed $500,000 but lacked a convincing strategy and pitch deck.</p>
+                <p style={{ marginBottom: '16px', fontSize: '0.95rem' }}><strong>Solution:</strong> We developed a comprehensive 5-year business plan and a breathtaking investor pitch deck.</p>
                 <div style={{ marginTop: 'auto', padding: '20px', background: 'var(--bg-white)', borderRadius: '12px', borderLeft: '4px solid var(--primary-orange)' }}>
                   <strong>Result:</strong> Secured $500,000 in funding within 3 months and successfully scaled.
                 </div>
@@ -150,7 +151,8 @@ const Home = () => {
               </div>
               <div style={{ padding: '30px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <h3 style={{ fontSize: '1.3rem', marginBottom: '12px' }}>Global Branding Results</h3>
-                <p style={{ marginBottom: '16px', fontSize: '0.95rem' }}><strong>Challenge:</strong> Small retail brand wanted a cohesive strategy and professional online presence.</p>
+                <p style={{ marginBottom: '8px', fontSize: '0.95rem' }}><strong>Challenge:</strong> Small retail brand wanted a cohesive strategy and professional online presence.</p>
+                <p style={{ marginBottom: '16px', fontSize: '0.95rem' }}><strong>Solution:</strong> Created a full brand identity system and optimized their digital marketing funnel.</p>
                 <div style={{ marginTop: 'auto', padding: '20px', background: 'var(--bg-white)', borderRadius: '12px', borderLeft: '4px solid var(--primary-blue)' }}>
                   <strong>Result:</strong> Traffic increased 40% and social following grew 150% in 60 days.
                 </div>
