@@ -105,7 +105,7 @@ const Blog = () => {
                          </p>
                          
                          <button 
-                            onClick={() => navigate(`/blog/${blog.slug || blog.id}`)} 
+                            onClick={() => navigate(`/blog/${blog.slug || blog.id}`, { state: { blog } })} 
                             className="blog-read-more-btn" 
                             style={{ padding: '10px 0', border: 'none', borderTop: '1px solid var(--border-color)', borderRadius: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', color: 'var(--primary-orange)', fontWeight: 700, width: '100%', cursor: 'pointer', background: 'transparent' }}
                          >

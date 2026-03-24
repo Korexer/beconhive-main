@@ -1,44 +1,70 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { supabase } from '../utils/supabaseClient';
 import { ArrowLeft, Clock, User, Calendar, Share2 } from 'lucide-react';
 
 const BlogPost = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const [blog, setBlog] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  
+  // Try to get blog from navigation state first for "instant" loading
+  const stateBlog = location.state?.blog;
+  
+  const [blog, setBlog] = useState(stateBlog || null);
+  const [loading, setLoading] = useState(!stateBlog);
 
   useEffect(() => {
     fetchBlog();
   }, [slug]);
 
   const fetchBlog = async () => {
-    setLoading(true);
-    // Fetch specifically by slug or fallback to ID
-    const { data, error } = await supabase
+    // If we have it from state, we can already show it, but it's good to refresh in background or if not present
+    if (!blog) setLoading(true);
+
+    // Try finding by slug first, then by ID as fallback
+    let { data, error } = await supabase
       .from('blogs')
       .select(`*, profiles(full_name)`)
-      .or(`slug.eq.${slug},id.eq.${slug}`)
+      .eq('slug', slug)
       .single();
 
-    if (error) {
-      console.error('Error fetching blog:', error);
-      // If not found, maybe it's an ID
+    if (error || !data) {
+       // Check if slug is actually an ID (UUID format check)
+       const isUUID = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(slug);
+       if (isUUID || !isNaN(slug)) {
+          const { data: idData, error: idError } = await supabase
+            .from('blogs')
+            .select(`*, profiles(full_name)`)
+            .eq('id', slug)
+            .single();
+          if (idData) {
+             data = idData;
+             error = null;
+          }
+       }
     }
 
     if (data) {
       setBlog(data);
-      // Increment views
-      await supabase
+      // Update SEO title and meta description dynamically
+      document.title = `${data.title} | BeconHive Insights`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) metaDesc.setAttribute('content', data.meta_description || 'Expert business insights and advice from BeconHive.');
+      
+      // Increment views in the background
+      supabase
         .from('blogs')
         .update({ views: (data.views || 0) + 1 })
-        .eq('id', data.id);
+        .eq('id', data.id)
+        .then(() => {});
+    } else {
+       console.error('Blog not found:', error);
     }
     setLoading(false);
   };
 
-  if (loading) {
+  if (loading && !blog) {
     return (
       <div style={{ padding: '160px 0', textAlign: 'center', minHeight: '80vh' }}>
         <div className="container">
@@ -149,8 +175,8 @@ const BlogPost = () => {
       </div>
 
       <style>{`
-        .blog-content h2 { font-size: 2.2rem; color: var(--color-navy); margin: 40px 0 20px; }
-        .blog-content h3 { font-size: 1.8rem; color: var(--color-navy); margin: 30px 0 15px; }
+        .blog-content h2 { font-size: 2.222rem; color: var(--color-navy); margin: 40px 0 20px; font-weight: 800; }
+        .blog-content h3 { font-size: 1.8rem; color: var(--color-navy); margin: 30px 0 15px; font-weight: 700; }
         .blog-content p { margin-bottom: 24px; }
         .blog-content img { 
           max-width: 100%; 
@@ -158,6 +184,7 @@ const BlogPost = () => {
           border-radius: 16px; 
           margin: 30px 0; 
           box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+          display: block;
         }
         .blog-content ul, .blog-content ol { margin-bottom: 24px; padding-left: 20px; }
         .blog-content li { margin-bottom: 12px; }
