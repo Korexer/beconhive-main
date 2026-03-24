@@ -24,7 +24,8 @@ import {
   X,
   CheckCircle2,
   RefreshCw,
-  Plus
+  Plus,
+  Type
 } from 'lucide-react';
 
 const AgentBlogEditor = () => {
@@ -33,6 +34,7 @@ const AgentBlogEditor = () => {
   const navigate = useNavigate();
   
   const editorRef = useRef(null);
+  const fileInputRef = useRef(null);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -44,8 +46,9 @@ const AgentBlogEditor = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [mediaLibrary, setMediaLibrary] = useState([]);
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
-  const [activeMediaTarget, setActiveMediaTarget] = useState('content'); // 'content' or 'featured'
+  const [activeMediaTarget, setActiveMediaTarget] = useState('content');
   const [storageError, setStorageError] = useState(null);
+  const [lastSelection, setLastSelection] = useState(null);
 
   useEffect(() => {
     if (!loading && (!user || profile?.role !== 'agent')) {
@@ -72,7 +75,6 @@ const AgentBlogEditor = () => {
           navigate('/dashboard');
         }
       };
-      
       fetchPost();
     }
     fetchMedia();
@@ -88,7 +90,6 @@ const AgentBlogEditor = () => {
       });
 
       if (error) {
-        console.error('Storage Error:', error);
         setStorageError(error.message);
         return;
       }
@@ -101,7 +102,6 @@ const AgentBlogEditor = () => {
         setMediaLibrary(mediaUrls.filter(m => !m.name.includes('.emptyKeep')));
       }
     } catch (err) {
-      console.error('System Error:', err);
       setStorageError(err.message);
     }
   };
@@ -111,8 +111,26 @@ const AgentBlogEditor = () => {
   };
   
   const execCmd = (command, value = null) => {
+    // Ensure the editor has focus before executing
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+    
+    // Restore selection if we have one (useful for modals)
+    if (lastSelection) {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(lastSelection);
+    }
+
     document.execCommand(command, false, value);
-    if (editorRef.current) editorRef.current.focus();
+  };
+
+  const saveSelection = () => {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      setLastSelection(selection.getRangeAt(0).cloneRange());
+    }
   };
 
   const sanitizeSlug = (raw) => raw.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
@@ -125,21 +143,20 @@ const AgentBlogEditor = () => {
 
   const uploadToStorage = async (file) => {
     setIsUploading(true);
-    // Create a safe filename
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
     
     const { data, error } = await supabase.storage.from('blog_media').upload(fileName, file);
     
     if (error) {
-      alert(`Upload Failed: ${error.message}. TIP: Ensure a 'blog_media' bucket exists in Supabase Storage with public access.`);
+      alert(`Upload Failed: ${error.message}`);
       setIsUploading(false);
       return null;
     }
     
     const { data: { publicUrl } } = supabase.storage.from('blog_media').getPublicUrl(fileName);
     setIsUploading(false);
-    fetchMedia(); // Refresh library
+    fetchMedia();
     return publicUrl;
   };
 
@@ -147,9 +164,10 @@ const AgentBlogEditor = () => {
     if (activeMediaTarget === 'featured') {
       setFormData({ ...formData, image_url: url });
     } else {
-      // Create specialized HTML for nice blog images
-      const imgHtml = `<div class="content-img-wrapper"><img src="${url}" alt="Blog content image" class="blog-body-image" /></div><p><br></p>`;
-      execCmd('insertHTML', imgHtml);
+      // Small delay to ensure focus is restored to the editor
+      setTimeout(() => {
+        execCmd('insertHTML', `<div class="content-img-wrapper"><img src="${url}" alt="Blog Image" class="blog-body-image" /></div><p><br></p>`);
+      }, 50);
     }
     setShowMediaLibrary(false);
   };
@@ -198,274 +216,226 @@ const AgentBlogEditor = () => {
     }
   };
 
-  const insertLink = () => {
-    const url = prompt('Enter the full link URL:');
-    if (url) execCmd('createLink', url);
+  const openLibrary = (target) => {
+    saveSelection(); // Save where the cursor was
+    setActiveMediaTarget(target);
+    setShowMediaLibrary(true);
+    fetchMedia();
   };
-
-  const insertManualImage = () => {
-    const url = prompt('Enter the direct image URL:');
-    if (url) {
-      const imgHtml = `<div class="content-img-wrapper"><img src="${url}" alt="External image" class="blog-body-image" /></div><p><br></p>`;
-      execCmd('insertHTML', imgHtml);
-    }
-  };
-
-  if (loading || !user) return <div className="section-padding text-center">Loading Content Editor...</div>;
 
   return (
-    <div style={{ background: '#F1F5F9', minHeight: 'calc(100vh - 80px)', padding: '40px 0' }}>
+    <div style={{ background: '#F8FAFC', minHeight: 'calc(100vh - 80px)', padding: '30px 0' }}>
        <div className="container" style={{ maxWidth: '1200px' }}>
          
-         {/* Top Header Actions */}
-         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '15px' }}>
-            <button onClick={() => navigate('/dashboard')} className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', background: 'white' }}>
-               <ArrowLeft size={16} /> Exit Editor
+         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '15px' }}>
+            <button onClick={() => navigate('/dashboard')} className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 18px', background: 'white' }}>
+               <ArrowLeft size={16} /> Dashboard
             </button>
             <div style={{ display: 'flex', gap: '12px' }}>
                <button onClick={() => savePost('draft')} disabled={isSaving || isUploading} style={{ background: 'white', border: '1px solid #cbd5e1', padding: '12px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Save size={18} /> {isSaving ? 'Saving...' : 'Save Draft'}
                </button>
                <button onClick={() => savePost('published')} disabled={isSaving || isUploading} className="btn btn-primary" style={{ padding: '12px 24px', display: 'flex', alignItems: 'center', gap: '8px', borderRadius: '8px', fontWeight: 700 }}>
-                  <LayoutTemplate size={18} /> {isSaving ? 'Publishing...' : 'Publish Article'}
+                  <LayoutTemplate size={18} /> {isSaving ? 'Publishing...' : 'Publish Post'}
                </button>
             </div>
          </div>
 
-         <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '30px' }}>
+         <div className="editor-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '30px' }}>
             
-            {/* Main Content Area */}
-            <div className="editor-main-lane" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-               <div className="glass-card" style={{ padding: '0', overflow: 'hidden', display: 'flex', flexDirection: 'column', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+            <div className="main-editor-pane">
+               <div className="glass-card" style={{ padding: '0', background: 'white', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'flex', flexDirection: 'column' }}>
                   
-                  {/* Advanced WP-style Toolbar */}
-                  <div className="wp-toolbar" style={{ display: 'flex', gap: '8px', padding: '15px 20px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', alignItems: 'center', flexWrap: 'wrap', position: 'sticky', top: '0', zIndex: 10 }}>
-                    <div className="toolbar-group">
-                      <button onClick={() => execCmd('bold')} title="Bold" className="tb-btn"><Bold size={18} /></button>
-                      <button onClick={() => execCmd('italic')} title="Italic" className="tb-btn"><Italic size={18} /></button>
+                  {/* FIXED TOOLBAR LAYOUT */}
+                  <div className="wp-toolbar" onMouseDown={(e) => e.preventDefault()} style={{ display: 'flex', gap: '4px', padding: '12px 16px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0', alignItems: 'center', flexWrap: 'wrap' }}>
+                    
+                    <div className="tb-section">
+                       <button onClick={() => execCmd('bold')} className="tb-btn" title="Bold"><Bold size={18} /></button>
+                       <button onClick={() => execCmd('italic')} className="tb-btn" title="Italic"><Italic size={18} /></button>
                     </div>
 
-                    <div className="tb-divider"></div>
+                    <div className="tb-v-divider"></div>
 
-                    <select onChange={(e) => execCmd('formatBlock', e.target.value)} className="tb-select">
-                      <option value="P">Paragraph</option>
-                      <option value="H2">Heading 2</option>
-                      <option value="H3">Heading 3</option>
-                      <option value="H4">Heading 4</option>
-                      <option value="H5">Heading 5</option>
-                    </select>
-
-                    <div className="tb-divider"></div>
-
-                    <div className="toolbar-group">
-                      <button onClick={() => execCmd('insertUnorderedList')} title="Bullets" className="tb-btn"><List size={18} /></button>
-                      <button onClick={() => execCmd('insertOrderedList')} title="Numbers" className="tb-btn"><ListOrdered size={18} /></button>
-                      <button onClick={() => execCmd('formatBlock', 'BLOCKQUOTE')} title="Quote" className="tb-btn"><Quote size={18} /></button>
+                    <div className="tb-section">
+                       <select onChange={(e) => execCmd('formatBlock', e.target.value)} className="tb-select">
+                          <option value="P">Paragraph</option>
+                          <option value="H2">Heading 2</option>
+                          <option value="H3">Heading 3</option>
+                          <option value="H4">Heading 4</option>
+                       </select>
                     </div>
 
-                    <div className="tb-divider"></div>
+                    <div className="tb-v-divider"></div>
 
-                    <div className="toolbar-group">
-                      <button onClick={() => execCmd('justifyLeft')} title="Align Left" className="tb-btn"><AlignLeft size={18} /></button>
-                      <button onClick={() => execCmd('justifyCenter')} title="Align Center" className="tb-btn"><AlignCenter size={18} /></button>
-                      <button onClick={() => execCmd('justifyRight')} title="Align Right" className="tb-btn"><AlignRight size={18} /></button>
+                    <div className="tb-section">
+                       <button onClick={() => execCmd('insertUnorderedList')} className="tb-btn" title="Bullets"><List size={18} /></button>
+                       <button onClick={() => execCmd('insertOrderedList')} className="tb-btn" title="Numbers"><ListOrdered size={18} /></button>
+                       <button onClick={() => execCmd('formatBlock', 'BLOCKQUOTE')} className="tb-btn" title="Quote"><Quote size={18} /></button>
                     </div>
 
-                    <div className="tb-divider"></div>
+                    <div className="tb-v-divider"></div>
 
-                    <div className="toolbar-group">
-                      <button onClick={insertLink} title="Insert Link" className="tb-btn"><LinkIcon size={18} /></button>
-                      <button onClick={() => { setActiveMediaTarget('content'); setShowMediaLibrary(true); fetchMedia(); }} title="Media Library" className="tb-btn media-btn"><ImageIcon size={18} style={{marginRight: '5px'}}/> Media</button>
-                      <button onClick={() => execCmd('insertHorizontalRule')} title="Horizontal Rule" className="tb-btn"><Minus size={18} /></button>
-                      <button onClick={() => execCmd('removeFormat')} title="Clear Formatting" className="tb-btn"><Eraser size={18} /></button>
+                    <div className="tb-section">
+                       <button onClick={() => execCmd('justifyLeft')} className="tb-btn"><AlignLeft size={18} /></button>
+                       <button onClick={() => execCmd('justifyCenter')} className="tb-btn"><AlignCenter size={18} /></button>
+                       <button onClick={() => execCmd('justifyRight')} className="tb-btn"><AlignRight size={18} /></button>
+                    </div>
+
+                    <div className="tb-v-divider"></div>
+
+                    <div className="tb-section">
+                       <button onClick={() => { const url = prompt('URL:'); if(url) execCmd('createLink', url); }} className="tb-btn"><LinkIcon size={18} /></button>
+                       <button onClick={() => openLibrary('content')} className="tb-btn media-btn"><ImageIcon size={18} /> <span>Media</span></button>
+                       <button onClick={() => execCmd('insertHorizontalRule')} className="tb-btn"><Minus size={18} /></button>
+                       <button onClick={() => execCmd('removeFormat')} className="tb-btn"><Eraser size={18} /></button>
                     </div>
                   </div>
 
-                  <div style={{ padding: '60px' }}>
+                  <div style={{ padding: '40px 50px' }}>
                     <input 
                       type="text" 
                       name="title" 
                       value={formData.title} 
                       onChange={handleChange} 
                       onBlur={handleTitleBlur}
-                      placeholder="Title of your masterpiece..." 
-                      className="editor-title-input"
+                      placeholder="Enter Article Title" 
+                      style={{ border: 'none', borderBottom: '2px solid #f1f5f9', outline: 'none', fontSize: '2.5rem', fontWeight: 900, marginBottom: '30px', width: '100%', color: '#0f172a' }} 
                     />
                     
                     <div 
                       ref={editorRef}
                       contentEditable 
+                      onBlur={saveSelection}
+                      onKeyUp={saveSelection}
+                      onClick={saveSelection}
                       suppressContentEditableWarning
                       style={{ 
                         minHeight: '600px',
                         outline: 'none', 
-                        fontSize: '1.25rem', 
-                        lineHeight: 1.8, 
+                        fontSize: '1.2rem', 
+                        lineHeight: '1.9', 
                         color: '#334155' 
                       }}
-                      data-placeholder="Start writing here... Press the Media button to insert images."
+                      data-placeholder="Begin your story here..."
                     ></div>
                   </div>
                </div>
             </div>
 
-            {/* Sidebar Lane */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-               
-               <div className="glass-card sidebar-box" style={{ padding: '24px' }}>
-                  <h3 className="sidebar-title">Featured Image</h3>
-                  <p style={{fontSize: '0.85rem', color: '#64748b', marginBottom: '15px'}}>This image appears at the top of the post and in the blog list.</p>
-                  
+            {/* Sidebar */}
+            <div className="sidebar">
+               <div className="glass-card side-box" style={{ padding: '24px', background: 'white' }}>
+                  <h3 className="side-title">Featured Image</h3>
                   {formData.image_url ? (
                     <div style={{ position: 'relative' }}>
-                      <img src={formData.image_url} alt="Cover" style={{ width: '100%', borderRadius: '12px', height: '200px', objectFit: 'cover' }} />
-                      <button onClick={() => setFormData({...formData, image_url: ''})} className="remove-img-btn">Remove</button>
+                      <img src={formData.image_url} alt="Featured" style={{ width: '100%', borderRadius: '12px', height: '200px', objectFit: 'cover' }} />
+                      <button onClick={() => setFormData({...formData, image_url: ''})} className="img-remove-badge">Change</button>
                     </div>
                   ) : (
-                    <button 
-                      onClick={() => { setActiveMediaTarget('featured'); setShowMediaLibrary(true); fetchMedia(); }}
-                      className="set-featured-btn"
-                    >
-                      <Plus size={32} color="var(--primary-blue)" />
-                      <span>Select Cover Image</span>
+                    <button onClick={() => openLibrary('featured')} className="featured-upload-btn">
+                      <Plus size={30} />
+                      <span>Set Feature Image</span>
                     </button>
                   )}
                </div>
 
-               <div className="glass-card sidebar-box" style={{ padding: '24px' }}>
-                  <h3 className="sidebar-title">SEO Settings</h3>
+               <div className="glass-card side-box" style={{ padding: '24px', marginTop: '20px', background: 'white' }}>
+                  <h3 className="side-title">SEO Optimization</h3>
                   <div style={{ marginBottom: '16px' }}>
-                     <label className="sidebar-label">URL Slug</label>
-                     <input type="text" name="slug" value={formData.slug} onChange={handleChange} placeholder="your-post-url" className="sidebar-input" />
+                     <label className="side-label">URL Slug</label>
+                     <input type="text" name="slug" value={formData.slug} onChange={handleChange} className="side-input" />
                   </div>
                   <div>
-                     <label className="sidebar-label">Meta Description</label>
-                     <textarea name="meta_description" value={formData.meta_description} onChange={handleChange} rows="4" placeholder="Short summary for Google..." className="sidebar-input scrollbar-hidden" style={{ resize: 'none' }}></textarea>
+                     <label className="side-label">Meta Description</label>
+                     <textarea name="meta_description" value={formData.meta_description} onChange={handleChange} rows="4" className="side-input" style={{ resize: 'none' }}></textarea>
                   </div>
                </div>
-
             </div>
 
          </div>
        </div>
 
-       {/* Media Library Modal */}
+       {/* Media Library */}
        {showMediaLibrary && (
          <div className="modal-overlay">
-           <div className="modal-content" style={{ maxWidth: '960px', width: '95%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', background: 'white', borderRadius: '24px', overflow: 'hidden' }}>
-             <div style={{ padding: '24px 32px', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc' }}>
+           <div className="modal-content" style={{ maxWidth: '900px', width: '95%', height: '80vh', display: 'flex', flexDirection: 'column' }}>
+             <div className="modal-header">
                <div>
-                  <h2 style={{ fontSize: '1.4rem', margin: 0, fontWeight: 800, color: '#0f172a' }}>Media Library</h2>
-                  <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b' }}>Choose an image or upload a new one.</p>
+                  <h2 style={{ margin: 0, fontSize: '1.3rem' }}>Media Library</h2>
                </div>
                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                 <button onClick={fetchMedia} title="Refresh Library" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b', display: 'flex' }}><RefreshCw size={20} /></button>
-                 <label className="btn btn-primary" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px' }}>
-                   <Plus size={18} /> Upload New
+                 <button onClick={fetchMedia} title="Refresh" className="modal-refresh-btn"><RefreshCw size={20} /></button>
+                 <label className="btn btn-primary" style={{ cursor: 'pointer', padding: '8px 16px' }}>
+                   + Upload
                    <input type="file" onChange={handleFileUpload} accept="image/*" style={{ display: 'none' }} />
                  </label>
-                 <button onClick={() => setShowMediaLibrary(false)} style={{ background: '#f1f5f9', border: 'none', padding: '8px', color: '#64748b', borderRadius: '8px', cursor: 'pointer' }}><X size={20} /></button>
+                 <button onClick={() => setShowMediaLibrary(false)} className="modal-close"><X size={24} /></button>
                </div>
              </div>
              
-             <div style={{ flex: 1, padding: '32px', overflowY: 'auto', background: '#fff' }}>
+             <div className="modal-body">
                {storageError ? (
-                 <div style={{ padding: '30px', background: '#fee2e2', color: '#b91c1c', borderRadius: '12px', textAlign: 'center' }}>
-                    <p style={{ fontWeight: 800, marginBottom: '10px' }}>Storage Connection Issue</p>
-                    <p style={{ fontSize: '0.9rem' }}>{storageError}</p>
-                    <p style={{ fontSize: '0.8rem', marginTop: '15px', color: '#ef4444' }}>Please ensure you have created a bucket named "blog_media" in your Supabase Storage and set it to BROADCAST or PUBLIC access.</p>
-                    <button onClick={fetchMedia} className="btn" style={{ marginTop: '15px', background: '#b91c1c', color: 'white', border: 'none' }}>Try Again</button>
+                 <div className="error-box">
+                    <p>Error: {storageError}</p>
                  </div>
                ) : (
-                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '20px' }}>
-                   {isUploading && (
-                      <div className="media-item-placeholder" style={{ background: 'var(--bg-light-blue)' }}>
-                        <RefreshCw size={24} className="spin" />
-                        <span style={{ fontSize: '0.85rem', marginTop: '10px', color: 'var(--primary-blue)', fontWeight: 700 }}>Uploading...</span>
-                      </div>
-                   )}
+                 <div className="media-grid">
+                   {isUploading && <div className="media-card loading-card"><RefreshCw className="spin" /></div>}
                    {mediaLibrary.map((item, idx) => (
-                     <div key={idx} className="media-item-card" onClick={() => handleImageSelect(item.url)}>
-                       <div className="media-thumb-wrapper">
-                          <img src={item.url} alt={item.name} />
-                          <div className="media-overlay-check"><CheckCircle2 size={32} color="white" /></div>
-                       </div>
-                       <div className="media-details">
-                         <span className="media-name">{item.name.replace(/^\d+_/, '')}</span>
-                       </div>
+                     <div key={idx} className="media-card" onClick={() => handleImageSelect(item.url)}>
+                       <img src={item.url} alt={item.name} onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=Error'; }} />
+                       <div className="media-card-name">{item.name.split('_').pop() || item.name}</div>
                      </div>
                    ))}
-                   {mediaLibrary.length === 0 && !isUploading && (
-                     <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '80px 0', border: '2px dashed #f1f5f9', borderRadius: '16px' }}>
-                        <ImageIcon size={48} color="#cbd5e1" style={{ marginBottom: '16px' }} />
-                        <p style={{ color: '#64748b', fontSize: '1rem', fontWeight: 600 }}>Your media library is empty.</p>
-                        <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Upload some images to start building your collection.</p>
-                     </div>
-                   )}
                  </div>
                )}
-             </div>
-
-             <div style={{ padding: '16px 32px', background: '#f8fafc', borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Supported formats: JPG, PNG, WEBP, GIF</span>
-                <button onClick={insertManualImage} style={{ background: 'none', border: 'none', color: 'var(--primary-blue)', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', textDecoration: 'underline' }}>Insert from external URL</button>
              </div>
            </div>
          </div>
        )}
 
        <style>{`
-          .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center; z-index: 10000;
-            padding: 20px;
-          }
+          .tb-section { display: flex; gap: 4px; align-items: center; }
+          .tb-v-divider { width: 1px; height: 24px; background: #e2e8f0; margin: 0 8px; }
+          .tb-btn { border: none; background: transparent; color: #64748b; padding: 8px; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; }
+          .tb-btn:hover { background: #f1f5f9; color: #0f172a; }
+          .media-btn { background: #0f172a !important; color: white !important; font-weight: 700; gap: 8px; padding: 6px 12px !important; }
+          .tb-select { border: 1px solid #e2e8f0; padding: 6px 10px; border-radius: 6px; font-weight: 600; font-size: 0.9rem; outline: none; }
           
-          .tb-btn { border: none; background: transparent; padding: 10px; border-radius: 8px; cursor: pointer; display: flex; color: #64748b; transition: 0.2s; }
-          .tb-btn:hover { background: #e2e8f0; color: #0f172a; }
-          .media-btn { background: #0f172a !important; color: white !important; font-weight: 700; padding: 8px 16px !important; }
-          .tb-divider { width: 1px; background: #e2e8f0; height: 28px; margin: 0 8px; }
-          .tb-select { border: 1px solid #e2e8f0; background: white; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 0.85rem; color: #334155; }
+          .side-title { font-size: 1.1rem; border-left: 3px solid var(--primary-blue); padding-left: 10px; margin-bottom: 20px; font-weight: 800; }
+          .side-label { display: block; font-weight: 700; font-size: 0.85rem; margin-bottom: 6px; color: #475569; }
+          .side-input { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; background: #f8fafc; font-size: 0.95rem; }
+          .side-input:focus { border-color: var(--primary-blue); background: white; }
           
-          .editor-title-input { border: none; outline: none; font-size: 3.2rem; font-weight: 900; margin-bottom: 30px; width: 100%; background: transparent; color: #0f172a; letter-spacing: -0.02em; }
-          .editor-title-input::placeholder { color: #cbd5e1; }
+          .featured-upload-btn { width: 100%; height: 200px; border: 2px dashed #cbd5e1; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: var(--primary-blue); cursor: pointer; background: #f8fafc; }
+          .img-remove-badge { position: absolute; top: 10px; right: 10px; background: rgba(239, 68, 68, 0.9); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: 700; }
 
-          .sidebar-box { background: white; border: 1px solid #e2e8f0; border-radius: 16px; transition: 0.3s; }
-          .sidebar-box:hover { border-color: var(--primary-blue); box-shadow: 0 10px 20px rgba(10, 88, 202, 0.05); }
-          .sidebar-title { fontSize: 1.1rem; margin-bottom: 20px; font-weight: 800; color: #0f172a; border-left: 4px solid var(--primary-blue); padding-left: 12px; }
-          .sidebar-label { display: block; font-weight: 700; margin-bottom: 8px; fontSize: 0.85rem; color: #475569; }
-          .sidebar-input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0; outline: none; font-size: 0.95rem; background: #f8fafc; transition: 0.2s; }
-          .sidebar-input:focus { border-color: var(--primary-blue); background: white; }
+          .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+          .modal-content { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 40px 80px rgba(0,0,0,0.3); }
+          .modal-header { padding: 20px 30px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+          .modal-body { flex: 1; padding: 20px; overflow-y: auto; background: #f9fafb; }
+          .modal-close { background: none; border: none; cursor: pointer; color: #64748b; }
+          .modal-refresh-btn { background: none; border: none; cursor: pointer; color: #64748b; display: flex; }
           
-          .set-featured-btn { width: 100%; height: 200px; border: 2px dashed #cbd5e1; border-radius: 16px; background: #f8fafc; cursor: pointer; display: flex; flexDirection: column; alignItems: center; justifyContent: center; gap: 12px; transition: 0.2s; }
-          .set-featured-btn:hover { background: #f1f5f9; border-color: var(--primary-blue); }
-          .set-featured-btn span { font-weight: 700; color: #475569; }
-          .remove-img-btn { position: absolute; top: 12px; right: 12px; background: rgba(239, 68, 68, 0.95); color: white; border: none; padding: 8px 16px; borderRadius: 8px; cursor: pointer; fontWeight: 700; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
-
-          .media-item-card { cursor: pointer; display: flex; flex-direction: column; gap: 8px; transition: 0.2s; }
-          .media-thumb-wrapper { position: relative; width: 100%; height: 160px; border-radius: 12px; overflow: hidden; border: 1px solid #e2e8f0; }
-          .media-thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-          .media-overlay-check { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 88, 202, 0.6); display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; }
-          .media-item-card:hover .media-overlay-check { opacity: 1; }
-          .media-item-card:hover img { transform: scale(1.1); }
-          .media-name { font-size: 0.75rem; color: #64748b; font-weight: 600; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
-
-          .media-item-placeholder { width: 100%; height: 160px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid #e2e8f0; }
+          .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+          .media-card { background: white; border: 1px solid #eee; border-radius: 8px; padding: 10px; cursor: pointer; transition: 0.2s; position: relative; }
+          .media-card:hover { border-color: var(--primary-blue); transform: translateY(-2px); }
+          .media-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 4px; }
+          .media-card-name { font-size: 0.7rem; margin-top: 8px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+          
+          .loading-card { display: flex; align-items: center; justify-content: center; height: 160px; }
+          .error-box { padding: 40px; text-align: center; color: #b91c1c; }
 
           .spin { animation: spin 1s linear infinite; }
           @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
           [contentEditable]:empty:before { content: attr(data-placeholder); color: #94a3b8; pointer-events: none; }
-          [contentEditable] .content-img-wrapper { margin: 40px 0; text-align: center; }
-          [contentEditable] .blog-body-image { 
-            max-width: 100%; width: 100%; height: auto; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.12); border: 1px solid #f1f5f9;
+          .content-img-wrapper { text-align: center; margin: 30px 0; }
+          .blog-body-image { max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+          
+          @media (max-width: 900px) {
+            .editor-layout { grid-template-columns: 1fr; }
           }
-          [contentEditable] blockquote { border-left: 6px solid var(--primary-orange); padding: 5px 0 5px 30px; font-style: italic; color: #475569; margin: 40px 0; font-size: 1.5rem; line-height: 1.6; }
-          [contentEditable] h2 { font-size: 2.5rem; margin-top: 60px; color: #0f172a; font-weight: 800; }
-          [contentEditable] h3 { font-size: 2rem; margin-top: 50px; color: #0f172a; font-weight: 700; }
-          [contentEditable] hr { border: none; border-top: 2px solid #f1f5f9; margin: 50px 0; }
-          .scrollbar-hidden::-webkit-scrollbar { display: none; }
        `}</style>
     </div>
   );
