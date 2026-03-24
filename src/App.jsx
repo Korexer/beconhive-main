@@ -17,6 +17,7 @@ import AgentSignup from './pages/AgentSignup';
 import Dashboard from './pages/Dashboard';
 import ChatRoom from './pages/ChatRoom';
 import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import AgentBlogEditor from './pages/AgentBlogEditor';
 
 import { useLocation } from 'react-router-dom';
@@ -44,6 +45,7 @@ function App() {
             <Route path="/services" element={<ServicesList />} />
             <Route path="/services/:slug" element={<ServiceDetail />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/login" element={<Login />} />

@@ -93,7 +93,7 @@ const Blog = () => {
                       <div style={{ padding: '30px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                          <div style={{ display: 'flex', gap: '15px', marginBottom: '16px', color: 'var(--color-gray)', fontSize: '0.85rem', fontWeight: 600 }}>
                             <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><Clock size={14}/> {new Date(blog.created_at).toLocaleDateString()}</span>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--primary-orange)' }}><User size={14}/> {blog.profiles?.full_name || 'BeconHive Expert'}</span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '5px', color: 'var(--primary-orange)' }}><User size={14}/> BeconHive</span>
                          </div>
                          
                          <h2 style={{ fontSize: '1.5rem', marginBottom: '16px', lineHeight: 1.3, color: 'var(--primary-blue)' }}>
@@ -105,11 +105,11 @@ const Blog = () => {
                          </p>
                          
                          <button 
-                            // onClick={() => navigate(`/blog/${blog.slug || blog.id}`)} 
-                            className="btn btn-outline" 
-                            style={{ padding: '10px 0', border: 'none', borderTop: '1px solid var(--border-color)', borderRadius: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', color: 'var(--primary-orange)', fontWeight: 700, width: '100%' }}
+                            onClick={() => navigate(`/blog/${blog.slug || blog.id}`)} 
+                            className="blog-read-more-btn" 
+                            style={{ padding: '10px 0', border: 'none', borderTop: '1px solid var(--border-color)', borderRadius: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', color: 'var(--primary-orange)', fontWeight: 700, width: '100%', cursor: 'pointer', background: 'transparent' }}
                          >
-                            Read Full Article <ArrowRight size={16} />
+                            Read more <ArrowRight size={16} />
                          </button>
                       </div>
                    </article>
@@ -118,8 +118,20 @@ const Blog = () => {
            )}
          </div>
       </div>
+      <style>{`
+        .blog-read-more-btn:hover {
+          color: var(--primary-blue) !important;
+          background: transparent !important;
+        }
+      `}</style>
     </div>
   );
 };
+
+const blogStyles = `
+  .blog-read-more-btn:hover {
+    color: var(--primary-blue) !important;
+  }
+`;
 
 export default Blog;

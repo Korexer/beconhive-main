@@ -113,6 +113,7 @@ const AgentBlogEditor = () => {
 
     const payload = {
        author_id: user.id,
+       author_name: 'BeconHive',
        title: formData.title,
        slug: safeSlug,
        meta_description: formData.meta_description,
@@ -181,8 +182,24 @@ const AgentBlogEditor = () => {
                   <button onClick={() => execCmd('bold')} title="Bold" style={{ border: 'none', background: 'white', padding: '8px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }}><Bold size={18} /></button>
                   <button onClick={() => execCmd('italic')} title="Italic" style={{ border: 'none', background: 'white', padding: '8px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }}><Italic size={18} /></button>
                   <div style={{ width: '1px', background: 'var(--color-gray)', height: '24px', margin: '0 8px' }}></div>
-                  <button onClick={() => execCmd('formatBlock', 'H2')} title="Heading 2" style={{ border: 'none', background: 'white', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>H2</button>
-                  <button onClick={() => execCmd('formatBlock', 'H3')} title="Heading 3" style={{ border: 'none', background: 'white', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>H3</button>
+                  
+                  <select 
+                    onChange={(e) => execCmd('formatBlock', e.target.value)} 
+                    style={{ border: 'none', background: 'white', padding: '8px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', outline: 'none' }}
+                  >
+                    <option value="P">Paragraph</option>
+                    <option value="H2">Heading 2</option>
+                    <option value="H3">Heading 3</option>
+                    <option value="H4">Heading 4</option>
+                    <option value="H5">Heading 5</option>
+                    <option value="H6">Heading 6</option>
+                  </select>
+
+                  <div style={{ width: '1px', background: 'var(--color-gray)', height: '24px', margin: '0 8px' }}></div>
+                  
+                  <button onClick={() => execCmd('insertUnorderedList')} title="Bullet Points" style={{ border: 'none', background: 'white', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>• List</button>
+                  <button onClick={() => execCmd('insertOrderedList')} title="Numbered List" style={{ border: 'none', background: 'white', padding: '8px 12px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>1. List</button>
+
                   <div style={{ width: '1px', background: 'var(--color-gray)', height: '24px', margin: '0 8px' }}></div>
                   
                   <button onClick={insertLink} title="Insert Link" style={{ border: 'none', background: 'white', padding: '8px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }}><LinkIcon size={18} /></button>
@@ -261,9 +278,18 @@ const AgentBlogEditor = () => {
           }
           [contentEditable] img, [contentEditable] video {
              max-width: 100%;
-             border-radius: 8px;
-             margin: 20px 0;
-             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+             height: auto;
+             display: block;
+             margin: 30px auto;
+             border-radius: 12px;
+             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+          }
+          [contentEditable] ul, [contentEditable] ol {
+             padding-left: 30px;
+             margin-bottom: 20px;
+          }
+          [contentEditable] li {
+             margin-bottom: 8px;
           }
        `}</style>
     </div>
