@@ -49,8 +49,8 @@ const Dashboard = () => {
         const { data } = await supabase.from('profiles').select('id, full_name, email').eq('role', 'customer');
         if (data && !unmounted) setCustomerList(data);
         
-        // Fetch Agent Blogs
-        const { data: blogData } = await supabase.from('blogs').select('*').eq('author_id', user?.id).order('created_at', { ascending: false });
+        // Fetch Agent Blogs - Now fetching all blogs for the manager view
+        const { data: blogData } = await supabase.from('blogs').select('*').order('created_at', { ascending: false });
         if (blogData && !unmounted) setAgentBlogs(blogData);
 
         // Fetch Todos
@@ -338,6 +338,17 @@ const Dashboard = () => {
           </div>
         );
       case 'post-blog':
+        const deleteBlog = async (id) => {
+          if (!window.confirm("Are you sure you want to permanently delete this blog post? This action cannot be undone.")) return;
+          const { error } = await supabase.from('blogs').delete().eq('id', id);
+          if (!error) {
+            setAgentBlogs(agentBlogs.filter(b => b.id !== id));
+            alert("Blog post deleted successfully.");
+          } else {
+            alert("Error deleting blog post: " + error.message);
+          }
+        };
+
         return (
           <div className="glass-card" style={{ padding: '40px' }}>
              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', flexWrap: 'wrap', gap: '20px' }}>
@@ -372,7 +383,8 @@ const Dashboard = () => {
                           {blog.meta_description && <p style={{ fontSize: '0.9rem', color: 'var(--color-gray)', marginTop: '8px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '400px' }}>{blog.meta_description}</p>}
                        </div>
                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', minWidth: '120px' }}>
-                          <button onClick={() => navigate(`/blog/edit/${blog.id}`)} className="btn btn-outline" style={{ padding: '8px 16px', fontSize: '0.9rem', width: '100%' }}>Edit Post</button>
+                          <button onClick={() => navigate(`/blog/edit/${blog.id}`)} className="btn btn-outline" style={{ padding: '8px 16px', fontSize: '0.9rem', width: '100%', marginBottom: '4px' }}>Edit Post</button>
+                          <button onClick={() => deleteBlog(blog.id)} className="btn" style={{ padding: '8px 16px', fontSize: '0.9rem', width: '100%', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600 }}>Delete Post</button>
                        </div>
                     </div>
                   ))
