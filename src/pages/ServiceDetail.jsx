@@ -41,8 +41,8 @@ const PurchaseButton = ({ pkgName, service, user, onSuccessCallback, className }
     window.FlutterwaveCheckout({
       public_key: FLUTTERWAVE_PUB,
       tx_ref: (new Date()).getTime().toString(),
-      amount: amountNgn,
-      currency: 'NGN',
+      amount: amountUsd,
+      currency: 'USD',
       payment_options: 'card, banktransfer, ussd',
       customer: {
         email: user?.email || "customer@beconhive.com",
