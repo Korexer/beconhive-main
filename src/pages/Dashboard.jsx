@@ -424,7 +424,7 @@ const Dashboard = () => {
                       <h3 style={{ fontSize: '1.3rem', marginBottom: '8px' }}>{order.service_id?.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) || 'BeconHive Elite Service'}</h3>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '15px 0', fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-navy)' }}>
                          ${order.amount_usd} 
-                         {order.amount_ngn && <span style={{ fontSize: '0.9rem', color: 'var(--color-gray)', fontWeight: 600 }}>(₦{(Number(order.amount_ngn) / 100).toLocaleString()})</span>}
+                         {order.amount_ngn && <span style={{ fontSize: '0.9rem', color: 'var(--color-gray)', fontWeight: 600 }}>(₦{Number(order.amount_ngn).toLocaleString()})</span>}
                       </div>
                       <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '16px', marginTop: '16px' }}>
                          <p style={{ fontSize: '0.9rem', color: 'var(--color-gray)', margin: 0 }}><strong>Ref:</strong> {order.reference}</p>
