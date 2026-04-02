@@ -52,7 +52,11 @@ const PurchaseButton = ({ pkgName, service, user, onSuccessCallback, className }
         description: `Payment for ${service.title} - ${service.packages[pkgName.toLowerCase()].name}`,
       },
       callback: function(response){
-        onSuccessCallback({ reference: response.transaction_id || response.tx_ref }, amountUsd, amountNgn, pkgName);
+        if (response.status === "successful") {
+          onSuccessCallback({ reference: response.transaction_id || response.tx_ref }, amountUsd, amountNgn, pkgName);
+        } else {
+          console.log("Payment was not successful: ", response);
+        }
       },
       onclose: function(){
         console.log('Payment window closed.');
