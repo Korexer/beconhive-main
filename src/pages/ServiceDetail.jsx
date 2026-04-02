@@ -6,23 +6,23 @@ import { useAuth } from '../utils/AuthContext';
 import { supabase } from '../utils/supabaseClient';
 
 const NGN_EXCHANGE_RATE = 1550; // Standard USD to NGN rate
-const PAYSTACK_PUB = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY;
+const FLUTTERWAVE_PUB = import.meta.env.VITE_FLUTTERWAVE_PUBLIC_KEY;
 
-// Dedicated Purchase button handling its own Paystack configuration natively via inline JS
+// Dedicated Purchase button handling its own Flutterwave configuration natively via inline JS
 const PurchaseButton = ({ pkgName, service, user, onSuccessCallback, className }) => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const amountUsd = service.packages[pkgName.toLowerCase()].price;
   const amountNgn = amountUsd * NGN_EXCHANGE_RATE;
 
   useEffect(() => {
-    // Dynamically load Paystack script for ultra-fast bundle performance
-    if (document.getElementById('paystack-script')) {
+    // Dynamically load Flutterwave script for ultra-fast bundle performance
+    if (document.getElementById('flutterwave-script')) {
       setScriptLoaded(true);
       return;
     }
     const script = document.createElement('script');
-    script.src = "https://js.paystack.co/v1/inline.js";
-    script.id = "paystack-script";
+    script.src = "https://checkout.flutterwave.com/v3.js";
+    script.id = "flutterwave-script";
     script.async = true;
     script.onload = () => setScriptLoaded(true);
     document.body.appendChild(script);
@@ -33,26 +33,31 @@ const PurchaseButton = ({ pkgName, service, user, onSuccessCallback, className }
        onSuccessCallback('redirect');
        return;
     }
-    if (!scriptLoaded || !window.PaystackPop) {
+    if (!scriptLoaded || !window.FlutterwaveCheckout) {
       alert("Payment gateway is still loading, please wait a second.");
       return;
     }
     
-    let handler = window.PaystackPop.setup({
-      key: PAYSTACK_PUB,
-      email: user?.email || "",
-      amount: amountNgn * 100, // In kobo
+    window.FlutterwaveCheckout({
+      public_key: FLUTTERWAVE_PUB,
+      tx_ref: (new Date()).getTime().toString(),
+      amount: amountNgn,
       currency: 'NGN',
-      ref: (new Date()).getTime().toString(),
-      callback: function(response){
-        onSuccessCallback(response, amountUsd, amountNgn, pkgName);
+      payment_options: 'card, banktransfer, ussd',
+      customer: {
+        email: user?.email || "customer@beconhive.com",
       },
-      onClose: function(){
+      customizations: {
+        title: "BeconHive",
+        description: `Payment for ${service.title} - ${service.packages[pkgName.toLowerCase()].name}`,
+      },
+      callback: function(response){
+        onSuccessCallback({ reference: response.transaction_id || response.tx_ref }, amountUsd, amountNgn, pkgName);
+      },
+      onclose: function(){
         console.log('Payment window closed.');
       }
     });
-
-    handler.openIframe();
   };
 
   return (
