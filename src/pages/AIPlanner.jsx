@@ -26,17 +26,17 @@ const slideLabels = [
 const aiPlannerFeatures = [
   {
     title: 'Context-Aware AI Generation',
-    text: 'Fine-tuned AI workflows map your inputs to real business planning structure, accounting logic, and investor storytelling.',
+    text: 'Fine-tuned AI workflows map founder inputs into structured business planning logic, market context, and finance narratives.',
     icon: <BrainCircuit size={24} />,
   },
   {
     title: 'Predictive Financial Forecasts',
-    text: 'Auto-build 3 to 5 year revenue models, cash-flow views, and break-even projections in a guided workspace.',
+    text: 'Generate 3 to 5 year revenue paths, break-even analysis, burn visibility, and key planning assumptions in seconds.',
     icon: <TrendingUp size={24} />,
   },
   {
     title: 'Bank & VC Grade Outputs',
-    text: 'Export polished business plans and finance packs built for investor review, grant review, and lender conversations.',
+    text: 'Export clean business plans and finance packs designed for investors, lenders, grants, and pitch competitions.',
     icon: <FileText size={24} />,
   },
 ];
@@ -63,10 +63,7 @@ const DashboardShell = ({ children, eyebrow, title, subtitle }) => (
 
       <div className="ai-shell-nav">
         {dashboardNavItems.map((item, index) => (
-          <div
-            key={item.label}
-            className={`ai-shell-nav-item ${index === 0 ? 'active' : ''}`}
-          >
+          <div key={item.label} className={`ai-shell-nav-item ${index === 0 ? 'active' : ''}`}>
             {item.icon}
             <span>{item.label}</span>
           </div>
@@ -280,6 +277,67 @@ const previewSlides = [
   },
 ];
 
+const HeroPreview = () => (
+  <div className="ai-hero-preview">
+    <div className="ai-hero-preview-top">
+      <div>
+        <div className="ai-mini-label">Planner command center</div>
+        <h3>From messy founder notes to investor-ready outputs</h3>
+      </div>
+      <div className="ai-hero-dots">
+        <span />
+        <span />
+        <span />
+      </div>
+    </div>
+
+    <div className="ai-hero-preview-grid">
+      <div className="ai-mini-kpi">
+        <span>Forecast build</span>
+        <strong>10 min</strong>
+      </div>
+      <div className="ai-mini-kpi">
+        <span>Scenarios</span>
+        <strong>3 models</strong>
+      </div>
+      <div className="ai-mini-kpi">
+        <span>Exports</span>
+        <strong>PDF + XLSX</strong>
+      </div>
+    </div>
+
+    <div className="ai-desktop-only">
+      <OnboardingPreview />
+    </div>
+
+    <div className="ai-mobile-hero-stack ai-mobile-only">
+      <div className="ai-mobile-flow-card">
+        <div className="ai-mobile-flow-step">
+          <span>01</span>
+          <div>
+            <strong>Upload raw files</strong>
+            <p>Pitch deck, assumptions, and founder notes.</p>
+          </div>
+        </div>
+        <div className="ai-mobile-flow-step">
+          <span>02</span>
+          <div>
+            <strong>AI builds models</strong>
+            <p>Revenue, burn, and break-even logic update instantly.</p>
+          </div>
+        </div>
+        <div className="ai-mobile-flow-step">
+          <span>03</span>
+          <div>
+            <strong>Export ready pack</strong>
+            <p>Business plan and finance files for investors and lenders.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const WaitlistForm = ({ source, buttonLabel, compact = false }) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -344,9 +402,7 @@ const WaitlistForm = ({ source, buttonLabel, compact = false }) => {
           {loading ? 'Saving...' : buttonLabel}
         </button>
       </form>
-      {message ? (
-        <p className={`ai-form-message ${messageTone}`}>{message}</p>
-      ) : null}
+      {message ? <p className={`ai-form-message ${messageTone}`}>{message}</p> : null}
     </div>
   );
 };
@@ -404,13 +460,13 @@ const AIPlanner = () => {
         <div className="container ai-hero-layout">
           <div className="ai-hero-copy">
             <div className="ai-hero-badge">Launching Q3 2026. Built for ambitious founders.</div>
-            <h1>Beconhive AI: Automated Business Planning &amp; Predictive Financial Modeling.</h1>
+            <h1>Automated Business Planning &amp; Predictive Financial Modeling.</h1>
             <p>
-              Stop spending weeks on spreadsheets. Upload your raw business data and let our fine-tuned AI
-              engines generate investor-ready financial forecasts, cash-flow statements, and complete business
-              plans in under 10 minutes.
+              Upload raw business inputs, founder notes, or spreadsheet assumptions and generate investor-ready
+              financial forecasts, cash-flow statements, and structured business plans in under 10 minutes.
             </p>
             <WaitlistForm source="hero" buttonLabel="Join the Beta Waitlist" />
+
             <div className="ai-proof-row">
               <div>
                 <strong>10 minutes</strong>
@@ -421,19 +477,20 @@ const AIPlanner = () => {
                 <span>automated projection ranges for growth scenarios</span>
               </div>
             </div>
-          </div>
 
-          <div className="ai-hero-panel">
-            <div className="ai-hero-panel-header">
-              <span>Preview mode</span>
-              <div className="ai-hero-dots">
-                <span />
-                <span />
-                <span />
+            <div className="ai-hero-support">
+              <div className="ai-support-card">
+                <span>Fine-tuned workflow</span>
+                <strong>Built for founders, funding teams, and early-stage operators.</strong>
+              </div>
+              <div className="ai-support-card">
+                <span>Early access</span>
+                <strong>Secure your place before the private beta rollout begins.</strong>
               </div>
             </div>
-            <OnboardingPreview />
           </div>
+
+          <HeroPreview />
         </div>
       </section>
 
@@ -514,7 +571,7 @@ const AIPlanner = () => {
         </div>
       </section>
 
-      <section className="ai-bottom-cta">
+      <section className="ai-bottom-cta" id="ai-waitlist-footer">
         <div className="container ai-bottom-cta-inner">
           <div>
             <span className="ai-section-tag">Early Access</span>
@@ -527,38 +584,51 @@ const AIPlanner = () => {
       <style>{`
         .ai-planner-page {
           background:
-            radial-gradient(circle at top left, rgba(237, 71, 5, 0.12), transparent 28%),
-            linear-gradient(180deg, #04142d 0%, #0a2348 12%, #f7f9fc 12.1%, #ffffff 100%);
+            radial-gradient(circle at top left, rgba(237, 71, 5, 0.14), transparent 24%),
+            linear-gradient(180deg, #04142d 0%, #071b3e 24%, #f5f8fc 24.1%, #ffffff 100%);
         }
 
         .ai-hero-section {
-          padding: 140px 0 90px;
+          padding: 128px 0 88px;
           color: white;
-          position: relative;
           overflow: hidden;
+          position: relative;
+        }
+
+        .ai-hero-section::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(circle at 82% 14%, rgba(237, 71, 5, 0.22), transparent 22%),
+            radial-gradient(circle at 10% 12%, rgba(10, 88, 202, 0.26), transparent 28%);
+          pointer-events: none;
         }
 
         .ai-hero-layout {
+          position: relative;
+          z-index: 1;
           display: grid;
-          grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-          gap: 36px;
+          grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+          gap: 34px;
           align-items: center;
         }
 
         .ai-hero-copy h1 {
-          font-size: clamp(2.7rem, 5.5vw, 5rem);
-          line-height: 1.05;
-          letter-spacing: -0.04em;
-          margin-bottom: 22px;
-          color: white;
+          font-size: clamp(3.1rem, 5vw, 5.35rem);
+          line-height: 0.98;
+          letter-spacing: -0.05em;
+          margin-bottom: 20px;
           max-width: 12ch;
+          color: #ffffff;
+          text-wrap: balance;
         }
 
         .ai-hero-copy p {
-          font-size: 1.1rem;
-          color: rgba(255, 255, 255, 0.82);
-          max-width: 640px;
-          margin-bottom: 24px;
+          max-width: 630px;
+          font-size: 1.08rem;
+          color: rgba(255, 255, 255, 0.8);
+          margin-bottom: 26px;
         }
 
         .ai-hero-badge,
@@ -569,44 +639,10 @@ const AIPlanner = () => {
           padding: 8px 14px;
           border-radius: 999px;
           background: rgba(255, 255, 255, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.15);
+          border: 1px solid rgba(255, 255, 255, 0.12);
           font-size: 0.9rem;
           font-weight: 600;
           margin-bottom: 18px;
-        }
-
-        .ai-proof-row {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 14px;
-          margin-top: 28px;
-        }
-
-        .ai-proof-row div,
-        .ai-sidebar-note,
-        .ai-metric-card,
-        .ai-feature-card,
-        .ai-bottom-cta-inner,
-        .ai-hero-panel {
-          backdrop-filter: blur(14px);
-        }
-
-        .ai-proof-row div {
-          padding: 18px;
-          border-radius: 20px;
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .ai-proof-row strong {
-          display: block;
-          font-size: 1.15rem;
-          margin-bottom: 4px;
-        }
-
-        .ai-proof-row span {
-          font-size: 0.92rem;
-          color: rgba(255, 255, 255, 0.72);
         }
 
         .ai-waitlist-form {
@@ -625,7 +661,7 @@ const AIPlanner = () => {
           padding: 0 18px;
           border-radius: 14px;
           border: 1px solid transparent;
-          background: rgba(255, 255, 255, 0.96);
+          background: rgba(255, 255, 255, 0.98);
           color: #04142d;
           font: inherit;
           outline: none;
@@ -649,28 +685,94 @@ const AIPlanner = () => {
           color: #ffd7d7;
         }
 
-        .ai-hero-panel,
+        .ai-proof-row {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 14px;
+          margin-top: 26px;
+        }
+
+        .ai-proof-row div,
+        .ai-support-card,
+        .ai-sidebar-note,
+        .ai-metric-card,
+        .ai-feature-card,
+        .ai-bottom-cta-inner,
+        .ai-hero-preview {
+          backdrop-filter: blur(14px);
+        }
+
+        .ai-proof-row div,
+        .ai-support-card {
+          padding: 18px;
+          border-radius: 20px;
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-proof-row strong,
+        .ai-support-card strong {
+          display: block;
+          font-size: 1.12rem;
+        }
+
+        .ai-proof-row span,
+        .ai-support-card span {
+          display: block;
+          color: rgba(255, 255, 255, 0.72);
+          font-size: 0.9rem;
+          margin-bottom: 6px;
+        }
+
+        .ai-hero-support {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 14px;
+          margin-top: 14px;
+        }
+
+        .ai-hero-preview,
         .ai-preview-stage {
           background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04));
           border: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow: 0 24px 80px rgba(4, 20, 45, 0.34);
-          border-radius: 28px;
+          box-shadow: 0 26px 80px rgba(4, 20, 45, 0.34);
+          border-radius: 30px;
           padding: 18px;
         }
 
-        .ai-hero-panel-header,
+        .ai-hero-preview {
+          background: linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
+        }
+
+        .ai-hero-preview-top,
         .ai-document-toolbar {
           display: flex;
           justify-content: space-between;
-          align-items: center;
-          margin-bottom: 14px;
-          color: rgba(255, 255, 255, 0.72);
-          font-size: 0.92rem;
+          align-items: flex-start;
+          gap: 18px;
+          margin-bottom: 16px;
+          color: rgba(255, 255, 255, 0.76);
+        }
+
+        .ai-mini-label {
+          font-size: 0.82rem;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+          color: rgba(255, 255, 255, 0.56);
+          margin-bottom: 6px;
+        }
+
+        .ai-hero-preview-top h3 {
+          font-size: 1.55rem;
+          line-height: 1.08;
+          color: white;
+          max-width: 14ch;
         }
 
         .ai-hero-dots {
           display: flex;
           gap: 6px;
+          margin-top: 8px;
         }
 
         .ai-hero-dots span,
@@ -682,9 +784,30 @@ const AIPlanner = () => {
           box-shadow: 0 0 16px rgba(237, 71, 5, 0.7);
         }
 
-        .ai-preview-section,
-        .ai-features-section {
-          position: relative;
+        .ai-hero-preview-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 12px;
+          margin-bottom: 18px;
+        }
+
+        .ai-mini-kpi {
+          padding: 14px 16px;
+          border-radius: 18px;
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .ai-mini-kpi span {
+          display: block;
+          font-size: 0.85rem;
+          color: rgba(255, 255, 255, 0.6);
+          margin-bottom: 8px;
+        }
+
+        .ai-mini-kpi strong {
+          color: white;
+          font-size: 1.16rem;
         }
 
         .ai-section-heading {
@@ -701,7 +824,7 @@ const AIPlanner = () => {
 
         .ai-section-heading h2 {
           font-size: clamp(2.1rem, 4vw, 3.4rem);
-          line-height: 1.08;
+          line-height: 1.06;
           margin-bottom: 12px;
         }
 
@@ -769,6 +892,12 @@ const AIPlanner = () => {
           height: 42px;
         }
 
+        .ai-preview-stage {
+          background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(240,245,250,0.98));
+          border-color: rgba(10, 88, 202, 0.1);
+          box-shadow: 0 24px 80px rgba(10, 88, 202, 0.12);
+        }
+
         .ai-preview-copy {
           margin-bottom: 18px;
         }
@@ -780,12 +909,6 @@ const AIPlanner = () => {
 
         .ai-preview-copy p {
           color: rgba(4, 20, 45, 0.68);
-        }
-
-        .ai-preview-stage {
-          background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(240,245,250,0.98));
-          border-color: rgba(10, 88, 202, 0.1);
-          box-shadow: 0 24px 80px rgba(10, 88, 202, 0.12);
         }
 
         .ai-preview-dots {
@@ -830,7 +953,8 @@ const AIPlanner = () => {
         .ai-document-toolbar,
         .ai-toc-item,
         .ai-live-pill,
-        .ai-break-even-content {
+        .ai-break-even-content,
+        .ai-mobile-flow-step {
           display: flex;
           align-items: center;
         }
@@ -1282,11 +1406,55 @@ const AIPlanner = () => {
           min-width: min(520px, 100%);
         }
 
+        .ai-mobile-only {
+          display: none;
+        }
+
+        .ai-mobile-flow-card {
+          display: grid;
+          gap: 12px;
+        }
+
+        .ai-mobile-flow-step {
+          gap: 14px;
+          align-items: flex-start;
+          padding: 14px 16px;
+          border-radius: 18px;
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .ai-mobile-flow-step span {
+          width: 34px;
+          height: 34px;
+          border-radius: 12px;
+          flex: 0 0 auto;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.88rem;
+          font-weight: 700;
+          color: white;
+          background: linear-gradient(135deg, var(--primary-orange), #ff8b5a);
+        }
+
+        .ai-mobile-flow-step strong {
+          display: block;
+          color: white;
+          margin-bottom: 4px;
+        }
+
+        .ai-mobile-flow-step p {
+          margin: 0;
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.92rem;
+        }
+
         @media (max-width: 1080px) {
           .ai-hero-layout,
+          .ai-feature-grid,
           .ai-bottom-cta-inner,
-          .ai-chart-grid,
-          .ai-feature-grid {
+          .ai-chart-grid {
             grid-template-columns: 1fr;
           }
 
@@ -1304,11 +1472,46 @@ const AIPlanner = () => {
         }
 
         @media (max-width: 767px) {
+          .ai-planner-page {
+            background: linear-gradient(180deg, #04142d 0%, #0d2145 18%, #f6f8fc 18.1%, #ffffff 100%);
+          }
+
           .ai-hero-section {
-            padding: 120px 0 70px;
+            padding: 108px 0 56px;
+          }
+
+          .ai-hero-layout {
+            gap: 24px;
+          }
+
+          .ai-hero-copy {
+            text-align: left;
+          }
+
+          .ai-hero-copy h1 {
+            font-size: clamp(2.5rem, 11vw, 3.35rem);
+            line-height: 0.98;
+            margin-bottom: 16px;
+          }
+
+          .ai-hero-copy p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+          }
+
+          .ai-waitlist-form,
+          .ai-waitlist-block.compact .ai-waitlist-form {
+            flex-direction: column;
+            padding: 12px;
+            min-width: 100%;
+          }
+
+          .ai-waitlist-form button {
+            width: 100%;
           }
 
           .ai-proof-row,
+          .ai-hero-support,
           .ai-onboarding-grid,
           .ai-export-grid,
           .ai-document-columns,
@@ -1316,25 +1519,52 @@ const AIPlanner = () => {
             grid-template-columns: 1fr;
           }
 
-          .ai-waitlist-form {
-            flex-direction: column;
-            padding: 12px;
+          .ai-hero-preview,
+          .ai-preview-stage {
+            border-radius: 24px;
+            padding: 14px;
           }
 
-          .ai-waitlist-form button {
-            width: 100%;
+          .ai-hero-preview-grid {
+            grid-template-columns: 1fr;
+            margin-bottom: 12px;
+          }
+
+          .ai-hero-preview-top h3 {
+            font-size: 1.2rem;
+            max-width: none;
+          }
+
+          .ai-desktop-only {
+            display: none;
+          }
+
+          .ai-mobile-only {
+            display: block;
+          }
+
+          .ai-section-heading {
+            margin-bottom: 26px;
+          }
+
+          .ai-section-heading h2 {
+            font-size: 2rem;
           }
 
           .ai-preview-controls {
             align-items: stretch;
+            margin-bottom: 14px;
           }
 
           .ai-preview-tabs {
             width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
           }
 
           .ai-preview-tabs button {
-            flex: 1 1 100%;
+            width: 100%;
+            text-align: left;
           }
 
           .ai-arrow-controls {
@@ -1343,19 +1573,46 @@ const AIPlanner = () => {
           }
 
           .ai-shell-content {
-            padding: 16px;
+            padding: 14px;
+            gap: 14px;
           }
 
           .ai-shell-topbar {
             flex-direction: column;
           }
 
-          .ai-bottom-cta-inner {
-            padding: 24px;
+          .ai-shell-topbar h3 {
+            font-size: 1.2rem;
           }
 
-          .ai-waitlist-block.compact .ai-waitlist-form {
-            min-width: 100%;
+          .ai-live-pill {
+            padding: 8px 12px;
+          }
+
+          .ai-card,
+          .ai-feature-card {
+            border-radius: 18px;
+            padding: 16px;
+          }
+
+          .ai-bar-chart,
+          .ai-line-chart {
+            height: 180px;
+          }
+
+          .ai-break-even-content {
+            flex-direction: column;
+            align-items: flex-start;
+          }
+
+          .ai-bottom-cta {
+            padding-bottom: 70px;
+          }
+
+          .ai-bottom-cta-inner {
+            padding: 24px 18px;
+            border-radius: 24px;
+            gap: 20px;
           }
         }
       `}</style>

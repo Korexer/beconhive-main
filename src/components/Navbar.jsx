@@ -1,16 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { useAuth } from '../utils/AuthContext';
 
 const Navbar = () => {
   const { user, profile, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [bizToolsOpen, setBizToolsOpen] = useState(false);
   const [mobileBizToolsOpen, setMobileBizToolsOpen] = useState(false);
   const bizToolsRef = useRef(null);
+  const isAIPlannerRoute = location.pathname === '/ai-planner';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,9 +50,10 @@ const Navbar = () => {
       left: 0,
       width: '100%',
       zIndex: 1000,
-      background: scrolled ? 'rgba(4, 20, 45, 0.95)' : '#04142D',
-      backdropFilter: scrolled ? 'blur(10px)' : 'none',
-      boxShadow: scrolled ? 'var(--shadow-lg)' : 'none',
+      background: isAIPlannerRoute ? 'rgba(4, 20, 45, 0.9)' : (scrolled ? 'rgba(4, 20, 45, 0.95)' : '#04142D'),
+      backdropFilter: isAIPlannerRoute || scrolled ? 'blur(14px)' : 'none',
+      boxShadow: isAIPlannerRoute || scrolled ? 'var(--shadow-lg)' : 'none',
+      borderBottom: isAIPlannerRoute ? '1px solid rgba(255,255,255,0.08)' : 'none',
       color: 'white',
       transition: 'all var(--transition)'
     }}>
@@ -62,7 +65,7 @@ const Navbar = () => {
       }}>
         {/* Authentic Customer Logo */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
-          <img src="/logo.png" alt="BeconHive" style={{ height: '64px', maxWidth: '240px', objectFit: 'contain' }} />
+          <img src="/logo.png" alt="BeconHive" style={{ height: isAIPlannerRoute ? '58px' : '64px', maxWidth: '240px', objectFit: 'contain' }} />
         </Link>
 
         {/* Desktop Menu */}
@@ -134,8 +137,14 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Link to="/login" style={{ fontWeight: 600, color: 'white', display: 'flex', alignItems: 'center' }}>Login</Link>
-              <Link to="/signup" className="btn btn-secondary" style={{ padding: '10px 24px' }}>Sign Up</Link>
+              {!isAIPlannerRoute ? (
+                <>
+                  <Link to="/login" style={{ fontWeight: 600, color: 'white', display: 'flex', alignItems: 'center' }}>Login</Link>
+                  <Link to="/signup" className="btn btn-secondary" style={{ padding: '10px 24px' }}>Sign Up</Link>
+                </>
+              ) : (
+                <a href="#ai-waitlist-footer" className="btn btn-secondary" style={{ padding: '10px 24px' }}>Get Early Access</a>
+              )}
             </>
           )}
         </div>
@@ -221,8 +230,14 @@ const Navbar = () => {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%', alignItems: 'center' }}>
-               <Link to="/login" onClick={closeMobileMenu} style={{ fontSize: '1.3rem', fontWeight: 600 }}>Login</Link>
-               <Link to="/signup" onClick={closeMobileMenu} className="btn btn-secondary" style={{ width: '100%', padding: '16px' }}>Sign Up Free</Link>
+               {!isAIPlannerRoute ? (
+                 <>
+                   <Link to="/login" onClick={closeMobileMenu} style={{ fontSize: '1.3rem', fontWeight: 600 }}>Login</Link>
+                   <Link to="/signup" onClick={closeMobileMenu} className="btn btn-secondary" style={{ width: '100%', padding: '16px' }}>Sign Up Free</Link>
+                 </>
+               ) : (
+                 <a href="#ai-waitlist-footer" onClick={closeMobileMenu} className="btn btn-secondary" style={{ width: '100%', padding: '16px' }}>Get Early Access</a>
+               )}
             </div>
           )}
         </nav>
@@ -232,6 +247,12 @@ const Navbar = () => {
         @media (max-width: 767px) {
           .desktop-nav, .nav-actions { display: none !important; }
           .mobile-toggle { display: block !important; }
+        }
+
+        @media (min-width: 768px) {
+          .desktop-nav {
+            gap: ${isAIPlannerRoute ? '26px' : '32px'} !important;
+          }
         }
       `}</style>
     </header>
