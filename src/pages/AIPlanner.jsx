@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  ArrowLeft,
-  ArrowRight,
   BarChart3,
   BrainCircuit,
   CheckCircle2,
@@ -17,10 +15,22 @@ import {
 } from 'lucide-react';
 import { supabase } from '../utils/supabaseClient';
 
-const slideLabels = [
-  'Smart Onboarding',
-  'Dynamic Financial Engine',
-  'One-Click Investor Export',
+const previewSlides = [
+  {
+    label: 'Smart Onboarding',
+    title: 'Structured founder intake',
+    description: 'A clean setup flow that turns scattered startup data into a guided plan.',
+  },
+  {
+    label: 'Dynamic Financial Engine',
+    title: 'Live model generation',
+    description: 'Interactive charts make financial logic feel transparent and credible.',
+  },
+  {
+    label: 'One-Click Investor Export',
+    title: 'Export-ready output',
+    description: 'The final screen shows clear business plan structure and delivery assets.',
+  },
 ];
 
 const aiPlannerFeatures = [
@@ -256,88 +266,6 @@ const ExportPreview = () => (
   </DashboardShell>
 );
 
-const previewSlides = [
-  {
-    label: slideLabels[0],
-    title: 'Structured founder intake',
-    description: 'A clean setup flow that turns scattered startup data into a guided plan.',
-    component: <OnboardingPreview />,
-  },
-  {
-    label: slideLabels[1],
-    title: 'Live model generation',
-    description: 'Interactive charts make financial logic feel transparent and credible.',
-    component: <ModelingPreview />,
-  },
-  {
-    label: slideLabels[2],
-    title: 'Export-ready output',
-    description: 'The final screen shows clear business plan structure and delivery assets.',
-    component: <ExportPreview />,
-  },
-];
-
-const HeroPreview = () => (
-  <div className="ai-hero-preview">
-    <div className="ai-hero-preview-top">
-      <div>
-        <div className="ai-mini-label">Planner command center</div>
-        <h3>From messy founder notes to investor-ready outputs</h3>
-      </div>
-      <div className="ai-hero-dots">
-        <span />
-        <span />
-        <span />
-      </div>
-    </div>
-
-    <div className="ai-hero-preview-grid">
-      <div className="ai-mini-kpi">
-        <span>Forecast build</span>
-        <strong>10 min</strong>
-      </div>
-      <div className="ai-mini-kpi">
-        <span>Scenarios</span>
-        <strong>3 models</strong>
-      </div>
-      <div className="ai-mini-kpi">
-        <span>Exports</span>
-        <strong>PDF + XLSX</strong>
-      </div>
-    </div>
-
-    <div className="ai-desktop-only">
-      <OnboardingPreview />
-    </div>
-
-    <div className="ai-mobile-hero-stack ai-mobile-only">
-      <div className="ai-mobile-flow-card">
-        <div className="ai-mobile-flow-step">
-          <span>01</span>
-          <div>
-            <strong>Upload raw files</strong>
-            <p>Pitch deck, assumptions, and founder notes.</p>
-          </div>
-        </div>
-        <div className="ai-mobile-flow-step">
-          <span>02</span>
-          <div>
-            <strong>AI builds models</strong>
-            <p>Revenue, burn, and break-even logic update instantly.</p>
-          </div>
-        </div>
-        <div className="ai-mobile-flow-step">
-          <span>03</span>
-          <div>
-            <strong>Export ready pack</strong>
-            <p>Business plan and finance files for investors and lenders.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
-
 const WaitlistForm = ({ source, buttonLabel, compact = false }) => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -408,8 +336,6 @@ const WaitlistForm = ({ source, buttonLabel, compact = false }) => {
 };
 
 const AIPlanner = () => {
-  const [activeSlide, setActiveSlide] = useState(0);
-
   useEffect(() => {
     const previousTitle = document.title;
     const previousDescription = document
@@ -438,29 +364,13 @@ const AIPlanner = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const intervalId = window.setInterval(() => {
-      setActiveSlide((current) => (current + 1) % previewSlides.length);
-    }, 5500);
-
-    return () => window.clearInterval(intervalId);
-  }, []);
-
-  const goToPrevious = () => {
-    setActiveSlide((current) => (current - 1 + previewSlides.length) % previewSlides.length);
-  };
-
-  const goToNext = () => {
-    setActiveSlide((current) => (current + 1) % previewSlides.length);
-  };
-
   return (
     <div className="ai-planner-page">
       <section className="ai-hero-section">
         <div className="container ai-hero-layout">
           <div className="ai-hero-copy">
             <div className="ai-hero-badge">Launching Q3 2026. Built for ambitious founders.</div>
-            <h1>Automated Business Planning &amp; Predictive Financial Modeling.</h1>
+            <h1>Beconhive AI: Automated Business Planning &amp; Predictive Financial Modeling.</h1>
             <p>
               Upload raw business inputs, founder notes, or spreadsheet assumptions and generate investor-ready
               financial forecasts, cash-flow statements, and structured business plans in under 10 minutes.
@@ -490,7 +400,33 @@ const AIPlanner = () => {
             </div>
           </div>
 
-          <HeroPreview />
+          <div className="ai-hero-side-card">
+            <div className="ai-mini-label">What founders get</div>
+            <h3>One workspace for planning, forecasting, and export-ready deliverables.</h3>
+            <div className="ai-hero-points">
+              <div className="ai-hero-point">
+                <span>01</span>
+                <div>
+                  <strong>Drop in raw inputs</strong>
+                  <p>Notes, pitch decks, spreadsheets, and assumptions.</p>
+                </div>
+              </div>
+              <div className="ai-hero-point">
+                <span>02</span>
+                <div>
+                  <strong>Generate financial logic</strong>
+                  <p>Revenue, burn, break-even, and structured planning outputs.</p>
+                </div>
+              </div>
+              <div className="ai-hero-point">
+                <span>03</span>
+                <div>
+                  <strong>Export investor-ready files</strong>
+                  <p>Business plans and finance packs ready for review.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -500,51 +436,58 @@ const AIPlanner = () => {
             <span className="ai-section-tag">Product Preview</span>
             <h2>A Sneak Peek Inside the Engine.</h2>
             <p>
-              A guided preview of the founder workflow, the financial engine, and the final export experience.
+              Swipe sideways to explore the product screens. The preview stays still until the user moves through it.
             </p>
           </div>
 
-          <div className="ai-preview-controls">
-            <div className="ai-preview-tabs">
-              {previewSlides.map((slide, index) => (
-                <button
-                  key={slide.label}
-                  type="button"
-                  className={index === activeSlide ? 'active' : ''}
-                  onClick={() => setActiveSlide(index)}
-                >
-                  {slide.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="ai-arrow-controls">
-              <button type="button" onClick={goToPrevious} aria-label="Previous preview">
-                <ArrowLeft size={18} />
-              </button>
-              <button type="button" onClick={goToNext} aria-label="Next preview">
-                <ArrowRight size={18} />
-              </button>
-            </div>
+          <div className="ai-preview-label-row">
+            {previewSlides.map((slide) => (
+              <div key={slide.label} className="ai-preview-label-pill">
+                {slide.label}
+              </div>
+            ))}
           </div>
 
-          <div className="ai-preview-stage">
-            <div className="ai-preview-copy">
-              <h3>{previewSlides[activeSlide].title}</h3>
-              <p>{previewSlides[activeSlide].description}</p>
-            </div>
-            {previewSlides[activeSlide].component}
-            <div className="ai-preview-dots">
-              {previewSlides.map((slide, index) => (
-                <button
-                  key={slide.label}
-                  type="button"
-                  className={index === activeSlide ? 'active' : ''}
-                  onClick={() => setActiveSlide(index)}
-                  aria-label={`Show ${slide.label}`}
-                />
-              ))}
-            </div>
+          <div className="ai-preview-scroll-hint">
+            <div className="ai-scroll-line" />
+            <span>Slide sideways</span>
+            <div className="ai-scroll-line" />
+          </div>
+
+          <div className="ai-preview-rail">
+            <article className="ai-preview-slide">
+              <div className="ai-preview-copy">
+                <h3>{previewSlides[0].title}</h3>
+                <p>{previewSlides[0].description}</p>
+              </div>
+              <div className="ai-preview-stage">
+                <OnboardingPreview />
+              </div>
+            </article>
+
+            <article className="ai-preview-slide">
+              <div className="ai-preview-copy">
+                <h3>{previewSlides[1].title}</h3>
+                <p>{previewSlides[1].description}</p>
+              </div>
+              <div className="ai-preview-stage">
+                <ModelingPreview />
+              </div>
+            </article>
+
+            <article className="ai-preview-slide">
+              <div className="ai-preview-copy">
+                <h3>{previewSlides[2].title}</h3>
+                <p>{previewSlides[2].description}</p>
+              </div>
+              <div className="ai-preview-stage">
+                <ExportPreview />
+              </div>
+            </article>
+          </div>
+
+          <div className="ai-mobile-only ai-swipe-note">
+            <div className="ai-swipe-chip">Swipe to see more screens</div>
           </div>
         </div>
       </section>
@@ -609,23 +552,22 @@ const AIPlanner = () => {
           position: relative;
           z-index: 1;
           display: grid;
-          grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+          grid-template-columns: minmax(0, 1fr) minmax(360px, 460px);
           gap: 34px;
           align-items: center;
         }
 
         .ai-hero-copy h1 {
-          font-size: clamp(3.1rem, 5vw, 5.35rem);
+          font-size: clamp(3rem, 5vw, 5rem);
           line-height: 0.98;
           letter-spacing: -0.05em;
           margin-bottom: 20px;
           max-width: 12ch;
           color: #ffffff;
-          text-wrap: balance;
         }
 
         .ai-hero-copy p {
-          max-width: 630px;
+          max-width: 650px;
           font-size: 1.08rem;
           color: rgba(255, 255, 255, 0.8);
           margin-bottom: 26px;
@@ -685,25 +627,27 @@ const AIPlanner = () => {
           color: #ffd7d7;
         }
 
-        .ai-proof-row {
+        .ai-proof-row,
+        .ai-hero-support {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
           gap: 14px;
-          margin-top: 26px;
+          margin-top: 18px;
         }
 
         .ai-proof-row div,
         .ai-support-card,
+        .ai-hero-side-card,
         .ai-sidebar-note,
         .ai-metric-card,
         .ai-feature-card,
-        .ai-bottom-cta-inner,
-        .ai-hero-preview {
+        .ai-bottom-cta-inner {
           backdrop-filter: blur(14px);
         }
 
         .ai-proof-row div,
-        .ai-support-card {
+        .ai-support-card,
+        .ai-hero-side-card {
           padding: 18px;
           border-radius: 20px;
           background: rgba(255, 255, 255, 0.06);
@@ -724,96 +668,69 @@ const AIPlanner = () => {
           margin-bottom: 6px;
         }
 
-        .ai-hero-support {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 14px;
-          margin-top: 14px;
-        }
-
-        .ai-hero-preview,
-        .ai-preview-stage {
-          background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.04));
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow: 0 26px 80px rgba(4, 20, 45, 0.34);
-          border-radius: 30px;
-          padding: 18px;
-        }
-
-        .ai-hero-preview {
-          background: linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05));
-        }
-
-        .ai-hero-preview-top,
-        .ai-document-toolbar {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          gap: 18px;
-          margin-bottom: 16px;
-          color: rgba(255, 255, 255, 0.76);
-        }
-
         .ai-mini-label {
           font-size: 0.82rem;
           text-transform: uppercase;
           letter-spacing: 0.08em;
           color: rgba(255, 255, 255, 0.56);
-          margin-bottom: 6px;
-        }
-
-        .ai-hero-preview-top h3 {
-          font-size: 1.55rem;
-          line-height: 1.08;
-          color: white;
-          max-width: 14ch;
-        }
-
-        .ai-hero-dots {
-          display: flex;
-          gap: 6px;
-          margin-top: 8px;
-        }
-
-        .ai-hero-dots span,
-        .ai-live-dot {
-          width: 8px;
-          height: 8px;
-          border-radius: 999px;
-          background: var(--primary-orange);
-          box-shadow: 0 0 16px rgba(237, 71, 5, 0.7);
-        }
-
-        .ai-hero-preview-grid {
-          display: grid;
-          grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 12px;
-          margin-bottom: 18px;
-        }
-
-        .ai-mini-kpi {
-          padding: 14px 16px;
-          border-radius: 18px;
-          background: rgba(255, 255, 255, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .ai-mini-kpi span {
-          display: block;
-          font-size: 0.85rem;
-          color: rgba(255, 255, 255, 0.6);
           margin-bottom: 8px;
         }
 
-        .ai-mini-kpi strong {
+        .ai-hero-side-card h3 {
+          font-size: 1.45rem;
+          line-height: 1.1;
           color: white;
-          font-size: 1.16rem;
+          margin-bottom: 18px;
+        }
+
+        .ai-hero-points {
+          display: grid;
+          gap: 14px;
+        }
+
+        .ai-hero-point,
+        .ai-brand-block,
+        .ai-shell-nav-item,
+        .ai-upload-header,
+        .ai-checklist div,
+        .ai-document-toolbar,
+        .ai-toc-item,
+        .ai-live-pill,
+        .ai-break-even-content {
+          display: flex;
+          gap: 12px;
+        }
+
+        .ai-hero-point span {
+          width: 34px;
+          height: 34px;
+          border-radius: 12px;
+          flex: 0 0 auto;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 0.88rem;
+          font-weight: 700;
+          color: white;
+          background: linear-gradient(135deg, var(--primary-orange), #ff8b5a);
+        }
+
+        .ai-hero-point strong {
+          display: block;
+          color: white;
+          margin-bottom: 4px;
+        }
+
+        .ai-hero-point p {
+          margin: 0;
+          color: rgba(255, 255, 255, 0.72);
+          font-size: 0.94rem;
         }
 
         .ai-section-heading {
           text-align: center;
           max-width: 760px;
-          margin: 0 auto 36px;
+          margin: 0 auto 30px;
         }
 
         .ai-section-heading .ai-section-tag {
@@ -833,73 +750,67 @@ const AIPlanner = () => {
           font-size: 1.04rem;
         }
 
-        .ai-preview-controls {
+        .ai-preview-label-row {
           display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 18px;
-          margin-bottom: 18px;
-          flex-wrap: wrap;
-        }
-
-        .ai-preview-tabs {
-          display: flex;
-          flex-wrap: wrap;
           gap: 10px;
+          flex-wrap: wrap;
+          justify-content: center;
+          margin-bottom: 18px;
         }
 
-        .ai-preview-tabs button,
-        .ai-arrow-controls button,
-        .ai-preview-dots button,
-        .ai-export-button {
-          font: inherit;
-        }
-
-        .ai-preview-tabs button {
-          padding: 12px 16px;
+        .ai-preview-label-pill {
+          padding: 10px 14px;
           border-radius: 999px;
           border: 1px solid rgba(10, 88, 202, 0.14);
           background: white;
           color: rgba(4, 20, 45, 0.72);
-          cursor: pointer;
-          transition: all var(--transition);
+          font-weight: 600;
         }
 
-        .ai-preview-tabs button.active {
-          background: #04142d;
-          color: white;
-          border-color: transparent;
-        }
-
-        .ai-arrow-controls {
+        .ai-preview-scroll-hint {
           display: flex;
-          gap: 10px;
-        }
-
-        .ai-arrow-controls button,
-        .ai-preview-dots button {
-          display: inline-flex;
           align-items: center;
           justify-content: center;
+          gap: 12px;
+          margin-bottom: 18px;
+          color: rgba(4, 20, 45, 0.6);
+          font-size: 0.92rem;
+          text-transform: uppercase;
+          letter-spacing: 0.08em;
+        }
+
+        .ai-scroll-line {
+          width: 48px;
+          height: 1px;
+          background: rgba(10, 88, 202, 0.18);
+        }
+
+        .ai-preview-rail {
+          display: flex;
+          gap: 24px;
+          overflow-x: auto;
+          scroll-snap-type: x mandatory;
+          padding-bottom: 14px;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(10, 88, 202, 0.3) transparent;
+        }
+
+        .ai-preview-rail::-webkit-scrollbar {
+          height: 10px;
+        }
+
+        .ai-preview-rail::-webkit-scrollbar-thumb {
+          background: rgba(10, 88, 202, 0.24);
           border-radius: 999px;
-          border: 1px solid rgba(10, 88, 202, 0.14);
-          background: white;
-          cursor: pointer;
         }
 
-        .ai-arrow-controls button {
-          width: 42px;
-          height: 42px;
-        }
-
-        .ai-preview-stage {
-          background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(240,245,250,0.98));
-          border-color: rgba(10, 88, 202, 0.1);
-          box-shadow: 0 24px 80px rgba(10, 88, 202, 0.12);
+        .ai-preview-slide {
+          flex: 0 0 min(1040px, 88vw);
+          scroll-snap-align: start;
         }
 
         .ai-preview-copy {
-          margin-bottom: 18px;
+          margin-bottom: 16px;
         }
 
         .ai-preview-copy h3 {
@@ -911,21 +822,30 @@ const AIPlanner = () => {
           color: rgba(4, 20, 45, 0.68);
         }
 
-        .ai-preview-dots {
-          display: flex;
-          justify-content: center;
-          gap: 8px;
-          margin-top: 18px;
+        .ai-preview-stage {
+          background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(240,245,250,0.98));
+          border: 1px solid rgba(10, 88, 202, 0.1);
+          box-shadow: 0 24px 80px rgba(10, 88, 202, 0.12);
+          border-radius: 30px;
+          padding: 18px;
         }
 
-        .ai-preview-dots button {
-          width: 12px;
-          height: 12px;
+        .ai-mobile-only {
+          display: none;
         }
 
-        .ai-preview-dots button.active {
-          background: var(--primary-orange);
-          border-color: var(--primary-orange);
+        .ai-swipe-note {
+          margin-top: 14px;
+          text-align: center;
+        }
+
+        .ai-swipe-chip {
+          display: inline-flex;
+          padding: 10px 14px;
+          border-radius: 999px;
+          background: rgba(10, 88, 202, 0.08);
+          color: var(--primary-blue);
+          font-weight: 600;
         }
 
         .ai-shell {
@@ -946,21 +866,8 @@ const AIPlanner = () => {
           gap: 22px;
         }
 
-        .ai-brand-block,
-        .ai-shell-nav-item,
-        .ai-upload-header,
-        .ai-checklist div,
-        .ai-document-toolbar,
-        .ai-toc-item,
-        .ai-live-pill,
-        .ai-break-even-content,
-        .ai-mobile-flow-step {
-          display: flex;
-          align-items: center;
-        }
-
         .ai-brand-block {
-          gap: 12px;
+          align-items: center;
         }
 
         .ai-brand-icon {
@@ -993,11 +900,11 @@ const AIPlanner = () => {
         }
 
         .ai-shell-nav-item {
-          gap: 10px;
           padding: 12px 14px;
           border-radius: 14px;
           color: rgba(255, 255, 255, 0.78);
           background: rgba(255, 255, 255, 0.03);
+          align-items: center;
         }
 
         .ai-shell-nav-item.active {
@@ -1054,12 +961,21 @@ const AIPlanner = () => {
         }
 
         .ai-live-pill {
+          align-items: center;
           gap: 8px;
           padding: 10px 14px;
           border-radius: 999px;
           background: white;
           border: 1px solid rgba(10, 88, 202, 0.12);
           white-space: nowrap;
+        }
+
+        .ai-live-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 999px;
+          background: var(--primary-orange);
+          box-shadow: 0 0 16px rgba(237, 71, 5, 0.7);
         }
 
         .ai-onboarding-grid,
@@ -1116,6 +1032,7 @@ const AIPlanner = () => {
         }
 
         .ai-upload-header {
+          align-items: center;
           gap: 10px;
           font-weight: 700;
           margin-bottom: 14px;
@@ -1153,6 +1070,7 @@ const AIPlanner = () => {
 
         .ai-checklist div,
         .ai-toc-item {
+          align-items: center;
           gap: 8px;
         }
 
@@ -1286,6 +1204,7 @@ const AIPlanner = () => {
         .ai-document-toolbar {
           margin-bottom: 16px;
           color: #04142d;
+          align-items: center;
         }
 
         .ai-export-button {
@@ -1410,46 +1329,6 @@ const AIPlanner = () => {
           display: none;
         }
 
-        .ai-mobile-flow-card {
-          display: grid;
-          gap: 12px;
-        }
-
-        .ai-mobile-flow-step {
-          gap: 14px;
-          align-items: flex-start;
-          padding: 14px 16px;
-          border-radius: 18px;
-          background: rgba(255, 255, 255, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .ai-mobile-flow-step span {
-          width: 34px;
-          height: 34px;
-          border-radius: 12px;
-          flex: 0 0 auto;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 0.88rem;
-          font-weight: 700;
-          color: white;
-          background: linear-gradient(135deg, var(--primary-orange), #ff8b5a);
-        }
-
-        .ai-mobile-flow-step strong {
-          display: block;
-          color: white;
-          margin-bottom: 4px;
-        }
-
-        .ai-mobile-flow-step p {
-          margin: 0;
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 0.92rem;
-        }
-
         @media (max-width: 1080px) {
           .ai-hero-layout,
           .ai-feature-grid,
@@ -1484,12 +1363,8 @@ const AIPlanner = () => {
             gap: 24px;
           }
 
-          .ai-hero-copy {
-            text-align: left;
-          }
-
           .ai-hero-copy h1 {
-            font-size: clamp(2.5rem, 11vw, 3.35rem);
+            font-size: clamp(2.4rem, 10vw, 3.3rem);
             line-height: 0.98;
             margin-bottom: 16px;
           }
@@ -1519,24 +1394,17 @@ const AIPlanner = () => {
             grid-template-columns: 1fr;
           }
 
-          .ai-hero-preview,
+          .ai-hero-side-card,
           .ai-preview-stage {
             border-radius: 24px;
+          }
+
+          .ai-preview-slide {
+            flex-basis: calc(100vw - 32px);
+          }
+
+          .ai-preview-stage {
             padding: 14px;
-          }
-
-          .ai-hero-preview-grid {
-            grid-template-columns: 1fr;
-            margin-bottom: 12px;
-          }
-
-          .ai-hero-preview-top h3 {
-            font-size: 1.2rem;
-            max-width: none;
-          }
-
-          .ai-desktop-only {
-            display: none;
           }
 
           .ai-mobile-only {
@@ -1544,32 +1412,11 @@ const AIPlanner = () => {
           }
 
           .ai-section-heading {
-            margin-bottom: 26px;
+            margin-bottom: 24px;
           }
 
           .ai-section-heading h2 {
             font-size: 2rem;
-          }
-
-          .ai-preview-controls {
-            align-items: stretch;
-            margin-bottom: 14px;
-          }
-
-          .ai-preview-tabs {
-            width: 100%;
-            display: grid;
-            grid-template-columns: 1fr;
-          }
-
-          .ai-preview-tabs button {
-            width: 100%;
-            text-align: left;
-          }
-
-          .ai-arrow-controls {
-            width: 100%;
-            justify-content: flex-end;
           }
 
           .ai-shell-content {
@@ -1590,7 +1437,8 @@ const AIPlanner = () => {
           }
 
           .ai-card,
-          .ai-feature-card {
+          .ai-feature-card,
+          .ai-hero-side-card {
             border-radius: 18px;
             padding: 16px;
           }
@@ -1602,7 +1450,6 @@ const AIPlanner = () => {
 
           .ai-break-even-content {
             flex-direction: column;
-            align-items: flex-start;
           }
 
           .ai-bottom-cta {
