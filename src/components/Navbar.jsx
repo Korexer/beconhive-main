@@ -170,10 +170,13 @@ const Navbar = () => {
           background: 'rgba(4, 20, 45, 0.98)',
           backdropFilter: 'blur(20px)',
           zIndex: 999,
-          display: isOpen ? 'flex' : 'none',
+          display: 'flex',
           flexDirection: 'column',
           padding: '40px 20px',
-          transition: 'all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1)'
+          opacity: isOpen ? 1 : 0,
+          pointerEvents: isOpen ? 'all' : 'none',
+          transform: isOpen ? 'translateY(0)' : 'translateY(-12px)',
+          transition: 'opacity 0.3s ease, transform 0.3s ease',
         }}
         className="mobile-drawer"
       >

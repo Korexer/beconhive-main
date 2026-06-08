@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   BarChart3,
   BrainCircuit,
@@ -182,10 +182,15 @@ const ModelingPreview = () => (
           <span>3-year revenue projection</span>
           <BarChart3 size={16} />
         </div>
-        <div className="ai-bar-chart">
+        <div className="ai-bar-chart" role="img" aria-label="3-year revenue projection chart">
           <div className="bar bar-one"><span /></div>
           <div className="bar bar-two"><span /></div>
           <div className="bar bar-three"><span /></div>
+        </div>
+        <div className="ai-bar-labels">
+          <span>Year 1</span>
+          <span>Year 2</span>
+          <span>Year 3</span>
         </div>
       </div>
       <div className="ai-card">
@@ -246,7 +251,7 @@ const ExportPreview = () => (
       <div className="ai-card ai-document-card">
         <div className="ai-document-toolbar">
           <span>Investor-Ready Business Plan</span>
-          <button type="button" className="ai-export-button">
+          <button type="button" className="ai-export-button" disabled title="Available after launch">
             <Download size={16} />
             Download PDF / Export to Excel
           </button>
@@ -336,6 +341,23 @@ const WaitlistForm = ({ source, buttonLabel, compact = false }) => {
 };
 
 const AIPlanner = () => {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const railRef = useRef(null);
+
+  const handleRailScroll = () => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const slideWidth = rail.scrollWidth / previewSlides.length;
+    setActiveSlide(Math.round(rail.scrollLeft / slideWidth));
+  };
+
+  const scrollToSlide = (index) => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const slideWidth = rail.scrollWidth / previewSlides.length;
+    rail.scrollTo({ left: index * slideWidth, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     const previousTitle = document.title;
     const previousDescription = document
@@ -370,7 +392,7 @@ const AIPlanner = () => {
         <div className="container ai-hero-layout">
           <div className="ai-hero-copy">
             <div className="ai-hero-badge">Launching Q3 2026. Built for ambitious founders.</div>
-            <h1>Beconhive AI: Automated Business Planning &amp; Predictive Financial Modeling.</h1>
+            <h1>Beconhive AI: Automated Business Planning & Predictive Financial Modeling.</h1>
             <p>
               Upload raw business inputs, founder notes, or spreadsheet assumptions and generate investor-ready
               financial forecasts, cash-flow statements, and structured business plans in under 10 minutes.
@@ -441,10 +463,15 @@ const AIPlanner = () => {
           </div>
 
           <div className="ai-preview-label-row">
-            {previewSlides.map((slide) => (
-              <div key={slide.label} className="ai-preview-label-pill">
+            {previewSlides.map((slide, index) => (
+              <button
+                key={slide.label}
+                type="button"
+                className={`ai-preview-label-pill${activeSlide === index ? ' active' : ''}`}
+                onClick={() => scrollToSlide(index)}
+              >
                 {slide.label}
-              </div>
+              </button>
             ))}
           </div>
 
@@ -454,7 +481,7 @@ const AIPlanner = () => {
             <div className="ai-scroll-line" />
           </div>
 
-          <div className="ai-preview-rail">
+          <div className="ai-preview-rail" ref={railRef} onScroll={handleRailScroll}>
             <article className="ai-preview-slide">
               <div className="ai-preview-copy">
                 <h3>{previewSlides[0].title}</h3>
@@ -484,6 +511,18 @@ const AIPlanner = () => {
                 <ExportPreview />
               </div>
             </article>
+          </div>
+
+          <div className="ai-slide-dots">
+            {previewSlides.map((_, dotIndex) => (
+              <button
+                key={dotIndex}
+                type="button"
+                className={`ai-slide-dot${activeSlide === dotIndex ? ' active' : ''}`}
+                aria-label={`Go to slide ${dotIndex + 1}`}
+                onClick={() => scrollToSlide(dotIndex)}
+              />
+            ))}
           </div>
 
           <div className="ai-mobile-only ai-swipe-note">
@@ -528,7 +567,7 @@ const AIPlanner = () => {
         .ai-planner-page {
           background:
             radial-gradient(circle at top left, rgba(237, 71, 5, 0.14), transparent 24%),
-            linear-gradient(180deg, #04142d 0%, #071b3e 24%, #f5f8fc 24.1%, #ffffff 100%);
+            linear-gradient(180deg, #04142d 0%, #071b3e 22%, #1a3a6b 23.5%, #f5f8fc 27%, #ffffff 100%);
         }
 
         .ai-hero-section {
@@ -559,7 +598,7 @@ const AIPlanner = () => {
 
         .ai-hero-copy h1 {
           font-size: clamp(3rem, 5vw, 5rem);
-          line-height: 0.98;
+          line-height: 1.04;
           letter-spacing: -0.05em;
           margin-bottom: 20px;
           max-width: 12ch;
@@ -612,6 +651,11 @@ const AIPlanner = () => {
         .ai-waitlist-form input:focus {
           border-color: var(--primary-orange);
           box-shadow: 0 0 0 4px rgba(237, 71, 5, 0.12);
+        }
+
+        .ai-waitlist-form input:invalid:not(:placeholder-shown) {
+          border-color: #ff4d4d;
+          box-shadow: 0 0 0 4px rgba(255, 77, 77, 0.12);
         }
 
         .ai-form-message {
@@ -765,6 +809,44 @@ const AIPlanner = () => {
           background: white;
           color: rgba(4, 20, 45, 0.72);
           font-weight: 600;
+          cursor: pointer;
+          font-family: inherit;
+          font-size: inherit;
+          transition: background 0.2s, border-color 0.2s, color 0.2s;
+        }
+
+        .ai-preview-label-pill.active {
+          background: var(--primary-blue);
+          border-color: var(--primary-blue);
+          color: white;
+        }
+
+        .ai-preview-label-pill:hover:not(.active) {
+          background: rgba(10, 88, 202, 0.06);
+          border-color: rgba(10, 88, 202, 0.3);
+        }
+
+        .ai-slide-dots {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-top: 18px;
+        }
+
+        .ai-slide-dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 999px;
+          border: none;
+          background: rgba(10, 88, 202, 0.2);
+          cursor: pointer;
+          padding: 0;
+          transition: background 0.2s, width 0.2s;
+        }
+
+        .ai-slide-dot.active {
+          background: var(--primary-orange);
+          width: 28px;
         }
 
         .ai-preview-scroll-hint {
@@ -887,9 +969,7 @@ const AIPlanner = () => {
 
         .ai-brand-subtitle,
         .ai-sidebar-note-label,
-        .ai-shell-eyebrow,
-        .ai-metric-card small,
-        .ai-document-footer {
+        .ai-metric-card small {
           color: rgba(255, 255, 255, 0.62);
           font-size: 0.82rem;
         }
@@ -1132,6 +1212,20 @@ const AIPlanner = () => {
         .bar-two span { height: 68%; }
         .bar-three span { height: 88%; }
 
+        .ai-bar-labels {
+          display: flex;
+          gap: 16px;
+          margin-top: 8px;
+        }
+
+        .ai-bar-labels span {
+          flex: 1;
+          text-align: center;
+          font-size: 0.78rem;
+          color: rgba(4, 20, 45, 0.5);
+          font-weight: 500;
+        }
+
         .ai-line-chart {
           position: relative;
           height: 220px;
@@ -1216,6 +1310,12 @@ const AIPlanner = () => {
           display: inline-flex;
           align-items: center;
           gap: 8px;
+          cursor: pointer;
+        }
+
+        .ai-export-button:disabled {
+          opacity: 0.65;
+          cursor: not-allowed;
         }
 
         .ai-document-viewer {
@@ -1296,6 +1396,10 @@ const AIPlanner = () => {
           padding: 0 0 90px;
         }
 
+        #ai-waitlist-footer {
+          scroll-margin-top: 96px;
+        }
+
         .ai-bottom-cta-inner {
           padding: 34px;
           border-radius: 28px;
@@ -1322,17 +1426,19 @@ const AIPlanner = () => {
 
         .ai-waitlist-block.compact .ai-waitlist-form {
           background: rgba(255, 255, 255, 0.12);
-          min-width: min(520px, 100%);
+          width: min(520px, 100%);
+          min-width: 0;
         }
 
-        .ai-mobile-only {
-          display: none;
+        @media (max-width: 860px) {
+          .ai-bottom-cta-inner {
+            grid-template-columns: 1fr;
+          }
         }
 
         @media (max-width: 1080px) {
           .ai-hero-layout,
           .ai-feature-grid,
-          .ai-bottom-cta-inner,
           .ai-chart-grid {
             grid-template-columns: 1fr;
           }
@@ -1365,7 +1471,7 @@ const AIPlanner = () => {
 
           .ai-hero-copy h1 {
             font-size: clamp(2.4rem, 10vw, 3.3rem);
-            line-height: 0.98;
+            line-height: 1.04;
             margin-bottom: 16px;
           }
 
