@@ -19,6 +19,7 @@ const Footer = () => {
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <li><Link to="/about" style={{ color: 'rgba(255,255,255,0.85)' }}>About Us</Link></li>
               <li><Link to="/services" style={{ color: 'rgba(255,255,255,0.85)' }}>Services</Link></li>
+              <li><Link to="/ai-planner" style={{ color: 'rgba(255,255,255,0.85)' }}>AI Planner</Link></li>
               <li><Link to="/blog" style={{ color: 'rgba(255,255,255,0.85)' }}>Blog</Link></li>
               <li><Link to="/contact" style={{ color: 'rgba(255,255,255,0.85)' }}>Contact</Link></li>
             </ul>

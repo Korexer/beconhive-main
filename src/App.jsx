@@ -19,6 +19,7 @@ import ChatRoom from './pages/ChatRoom';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import AgentBlogEditor from './pages/AgentBlogEditor';
+import AIPlanner from './pages/AIPlanner';
 
 import { useLocation } from 'react-router-dom';
 
@@ -54,6 +55,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/blog/edit/:id" element={<AgentBlogEditor />} />
             <Route path="/chat/:agentId" element={<ChatRoom />} />
+            <Route path="/ai-planner" element={<AIPlanner />} />
           </Routes>
         </main>
         <Footer />

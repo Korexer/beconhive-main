@@ -120,6 +120,49 @@ const Home = () => {
         </div>
       </section>
 
+      {/* AI Planner Spotlight */}
+      <section className="section-padding" style={{ background: 'linear-gradient(135deg, #04142D 0%, #0A58CA 100%)', color: 'white', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at top right, rgba(237, 71, 5, 0.28), transparent 28%)' }} />
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '32px', alignItems: 'center' }}>
+            <div>
+              <span style={{ display: 'inline-block', padding: '8px 16px', borderRadius: '999px', background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.18)', fontWeight: 700, fontSize: '0.9rem', marginBottom: '18px' }}>
+                New Product Preview
+              </span>
+              <h2 style={{ fontSize: 'clamp(2.2rem, 4vw, 3.6rem)', color: 'white', marginBottom: '18px', lineHeight: 1.08 }}>
+                Meet Beconhive AI Planner
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.88)', fontSize: '1.08rem', maxWidth: '620px', marginBottom: '26px' }}>
+                See the upcoming software experience built to turn raw founder inputs into investor-ready business plans, forecasts, and exportable finance documents.
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px' }}>
+                <Link to="/ai-planner" className="btn btn-secondary" style={{ padding: '16px 30px' }}>
+                  Explore AI Planner
+                </Link>
+                <Link to="/contact" className="btn" style={{ padding: '16px 30px', background: 'white', color: 'var(--primary-blue)', borderRadius: '30px', fontWeight: 700 }}>
+                  Talk to Our Team
+                </Link>
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gap: '16px' }}>
+              <div style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '22px', padding: '22px' }}>
+                <h3 style={{ color: 'white', marginBottom: '10px' }}>Automated planning workflow</h3>
+                <p style={{ color: 'rgba(255,255,255,0.82)' }}>
+                  Upload founder notes, spreadsheets, or a pitch deck and turn them into structured planning assets fast.
+                </p>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '22px', padding: '22px' }}>
+                <h3 style={{ color: 'white', marginBottom: '10px' }}>Built for funding readiness</h3>
+                <p style={{ color: 'rgba(255,255,255,0.82)' }}>
+                  Designed to support founders preparing for investors, lenders, pitch competitions, and growth grants.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Case Studies Section */}
       <section className="section-padding bg-light">
         <div className="container">
