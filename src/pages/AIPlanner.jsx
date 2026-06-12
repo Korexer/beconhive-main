@@ -87,6 +87,21 @@ const WaitlistForm = ({ source, buttonLabel, compact = false }) => {
       return;
     }
 
+    try {
+      const { error: emailError } = await supabase.functions.invoke('send_waitlist_email', {
+        body: {
+          email: trimmedEmail,
+          source,
+        },
+      });
+
+      if (emailError) {
+        console.error('Waitlist email send failed:', emailError);
+      }
+    } catch (emailInvokeError) {
+      console.error('Waitlist email invoke failed:', emailInvokeError);
+    }
+
     setMessageTone('success');
     setMessage('You are on the list. We will share early access details soon.');
     setEmail('');
