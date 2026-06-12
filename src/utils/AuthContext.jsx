@@ -1,7 +1,6 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from './supabaseClient';
-
-const AuthContext = createContext();
+import { AuthContext } from './authContextStore';
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -36,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchProfile = async (sessionUser) => {
     try {
-      const { data, error } = await supabase.from('profiles').select('*').eq('id', sessionUser.id).single();
+      const { data } = await supabase.from('profiles').select('*').eq('id', sessionUser.id).single();
       
       if (data) {
         if (data.role === 'agent') {
@@ -49,7 +48,7 @@ export const AuthProvider = ({ children }) => {
         // Self-Healing Logic for Test Users that missed the Profile creation trigger
         const fallback = {
            id: sessionUser.id,
-           role: sessionUser.user_metadata?.role || 'customer',
+           role: 'customer',
            full_name: sessionUser.user_metadata?.full_name || sessionUser.email.split('@')[0],
            email: sessionUser.email
         };
@@ -57,7 +56,6 @@ export const AuthProvider = ({ children }) => {
         
         // Attempt to heal database quietly
         supabase.from('profiles').insert(fallback).then();
-        if (fallback.role === 'agent') supabase.from('agent_profiles').insert({ id: fallback.id, is_approved: false }).then();
       }
     } catch(err) {
       console.error(err);
@@ -76,5 +74,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);

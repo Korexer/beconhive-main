@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { supabase } from '../utils/supabaseClient';
 import { ArrowLeft, Clock, User, Calendar, Share2 } from 'lucide-react';
+import { sanitizeHtml } from '../utils/sanitizeHtml';
 
 const BlogPost = () => {
   const { slug } = useParams();
@@ -13,12 +14,9 @@ const BlogPost = () => {
   
   const [blog, setBlog] = useState(stateBlog || null);
   const [loading, setLoading] = useState(!stateBlog);
+  const safeContent = sanitizeHtml(blog?.content || '');
 
-  useEffect(() => {
-    fetchBlog();
-  }, [slug]);
-
-  const fetchBlog = async () => {
+  async function fetchBlog() {
     // If we have it from state, we can already show it, but it's good to refresh in background or if not present
     if (!blog) setLoading(true);
 
@@ -33,7 +31,7 @@ const BlogPost = () => {
        // Check if slug is actually an ID (UUID format check)
        const isUUID = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(slug);
        if (isUUID || !isNaN(slug)) {
-          const { data: idData, error: idError } = await supabase
+          const { data: idData } = await supabase
             .from('blogs')
             .select(`*, profiles(full_name)`)
             .eq('id', slug)
@@ -62,7 +60,11 @@ const BlogPost = () => {
        console.error('Blog not found:', error);
     }
     setLoading(false);
-  };
+  }
+
+  useEffect(() => {
+    fetchBlog();
+  }, [slug]);
 
   if (loading && !blog) {
     return (
@@ -140,7 +142,7 @@ const BlogPost = () => {
           {/* Main Content Area */}
           <div 
             className="blog-content" 
-            dangerouslySetInnerHTML={{ __html: blog.content }} 
+            dangerouslySetInnerHTML={{ __html: safeContent }} 
             style={{ 
               fontSize: '1.25rem', 
               lineHeight: 1.8, 

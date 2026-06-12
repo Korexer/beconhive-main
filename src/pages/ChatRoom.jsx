@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAuth } from '../utils/AuthContext';
+import { useAuth } from '../utils/useAuth';
 import { supabase } from '../utils/supabaseClient';
 import { Send, Image as ImageIcon, Mic, StopCircle, ArrowLeft, MessageSquare } from 'lucide-react';
 
 const ChatRoom = () => {
   const { agentId } = useParams();
-  const { user, profile, loading } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   
   const [messages, setMessages] = useState([]);
@@ -114,7 +114,7 @@ const ChatRoom = () => {
     if (!file) return;
     
     const fileName = `${user.id}/${Date.now()}_${file.name}`;
-    const { data, error } = await supabase.storage.from('chat_media').upload(fileName, file);
+    const { error } = await supabase.storage.from('chat_media').upload(fileName, file);
     
     if (error) {
       alert("Please ensure you have created a public bucket named 'chat_media' in Supabase to upload images! Error: " + error.message);
@@ -139,7 +139,7 @@ const ChatRoom = () => {
         const file = new File([audioBlob], `audio_${Date.now()}.webm`, { type: 'audio/webm' });
         
         const fileName = `${user.id}/${Date.now()}_audio.webm`;
-        const { data, error } = await supabase.storage.from('chat_media').upload(fileName, file);
+        const { error } = await supabase.storage.from('chat_media').upload(fileName, file);
         
         if (error) {
           alert("Audio upload failed! Check 'chat_media' bucket. " + error.message);
@@ -151,7 +151,7 @@ const ChatRoom = () => {
       
       recorder.start();
       setIsRecording(true);
-    } catch (err) {
+    } catch {
       alert("Microphone access denied or not supported.");
     }
   };
@@ -159,6 +159,7 @@ const ChatRoom = () => {
   const stopRecording = () => {
     if (mediaRecorder) {
       mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
       setIsRecording(false);
     }
   };

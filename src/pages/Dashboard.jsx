@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../utils/AuthContext';
+import { useAuth } from '../utils/useAuth';
 import { supabase } from '../utils/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { User, MessageSquare, ClipboardList, PenTool, ShoppingBag, LogOut, Users, Search, Image as ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user, profile, loading, signOut } = useAuth();
+  const { user, profile, loading, logout } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -25,10 +25,7 @@ const Dashboard = () => {
     if (!loading && !user) {
       navigate('/login');
     }
-    if (!loading && profile && !activeTab) {
-      setActiveTab(profile.role === 'agent' ? 'customers' : 'agents');
-    }
-  }, [user, loading, navigate, profile, activeTab]);
+  }, [user, loading, navigate]);
 
   // Fetch logic on mount
   useEffect(() => {
@@ -92,6 +89,7 @@ const Dashboard = () => {
   if (!user || !profile) return null;
 
   const isAgent = profile.role === 'agent';
+  const selectedTab = activeTab || (isAgent ? 'customers' : 'agents');
 
   const menuItems = isAgent ? [
     { id: 'profile', label: 'Profile' },
@@ -155,7 +153,7 @@ const Dashboard = () => {
              )}
           </div>
         );
-      case 'customers':
+      case 'customers': {
         const filteredCustomers = customerList.filter(c => 
           c.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
           c.email?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -204,11 +202,12 @@ const Dashboard = () => {
              )}
           </div>
         );
-      case 'todo':
+      }
+      case 'todo': {
         const handleAddTodo = async (e) => {
           e.preventDefault();
           if (!todoInput.title) return;
-          const { data, error } = await supabase.from('todos').insert([{ 
+          const { data } = await supabase.from('todos').insert([{ 
             agent_id: user.id, 
             title: todoInput.title, 
             due_date: todoInput.due_date || null,
@@ -337,7 +336,8 @@ const Dashboard = () => {
             </div>
           </div>
         );
-      case 'post-blog':
+      }
+      case 'post-blog': {
         const deleteBlog = async (id) => {
           if (!window.confirm("Are you sure you want to permanently delete this blog post? This action cannot be undone.")) return;
           const { error } = await supabase.from('blogs').delete().eq('id', id);
@@ -392,6 +392,7 @@ const Dashboard = () => {
              </div>
           </div>
         );
+      }
       case 'services':
         return (
           <div className="glass-card" style={{ padding: '40px' }}>
@@ -485,7 +486,7 @@ const Dashboard = () => {
           <button 
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             style={{ 
-              position: 'absolute', right: sidebarCollapsed ? '50%' : '15px', transform: sidebarCollapsed ? 'translateX(50%)' : 'none',
+              position: 'absolute', right: sidebarCollapsed ? '50%' : '15px',
               top: '50%', transform: sidebarCollapsed ? 'translate(50%, -50%)' : 'translateY(-50%)',
               background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', padding: '6px', borderRadius: '6px', cursor: 'pointer'
             }}
@@ -502,10 +503,10 @@ const Dashboard = () => {
               style={{
                 display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '14px 20px', 
                 borderRadius: '12px', cursor: 'pointer', outline: 'none', transition: 'all 0.2s',
-                background: activeTab === item.id ? 'var(--primary-blue)' : 'transparent',
-                color: activeTab === item.id ? 'white' : 'var(--color-gray)',
+                background: selectedTab === item.id ? 'var(--primary-blue)' : 'transparent',
+                color: selectedTab === item.id ? 'white' : 'var(--color-gray)',
                 border: 'none', textAlign: 'left', fontWeight: 600, fontSize: '1.05rem',
-                boxShadow: activeTab === item.id ? '0 4px 12px rgba(10,50,115,0.2)' : 'none',
+                boxShadow: selectedTab === item.id ? '0 4px 12px rgba(10,50,115,0.2)' : 'none',
                 overflow: 'hidden'
               }}
             >
@@ -521,7 +522,7 @@ const Dashboard = () => {
               {!sidebarCollapsed && <span style={{ whiteSpace: 'nowrap' }}>{item.label}</span>}
             </button>
           ))}
-          <button onClick={() => signOut()} style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '14px 20px', background: 'rgba(239, 68, 68, 0.05)', color: '#ef4444', border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: 600, overflow: 'hidden' }}>
+          <button onClick={() => logout()} style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '14px', width: '100%', padding: '14px 20px', background: 'rgba(239, 68, 68, 0.05)', color: '#ef4444', border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: 600, overflow: 'hidden' }}>
              <LogOut size={18} style={{ flexShrink: 0 }} /> {!sidebarCollapsed && <span style={{ whiteSpace: 'nowrap' }}>Logout</span>}
           </button>
         </nav>
@@ -536,8 +537,8 @@ const Dashboard = () => {
                style={{
                   padding: '10px 20px', borderRadius: '25px', border: 'none', fontWeight: 700,
                   fontSize: '0.9rem', cursor: 'pointer',
-                  background: activeTab === item.id ? 'var(--primary-blue)' : 'rgba(10,50,115,0.04)',
-                  color: activeTab === item.id ? 'white' : 'var(--primary-blue)',
+                  background: selectedTab === item.id ? 'var(--primary-blue)' : 'rgba(10,50,115,0.04)',
+                  color: selectedTab === item.id ? 'white' : 'var(--primary-blue)',
                   transition: '0.2s'
                }}
             >

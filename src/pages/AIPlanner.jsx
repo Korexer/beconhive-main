@@ -226,7 +226,7 @@ const AIPlanner = () => {
       </section>
 
       <section className="section-padding ai-preview-section">
-        <div className="container">
+        <div className="container ai-preview-shell">
           <div className="ai-section-heading ai-section-heading--dark">
             <span className="ai-section-tag ai-section-tag--orange">Product Preview</span>
             <h2>A Sneak Peek Inside the Engine</h2>
@@ -335,6 +335,15 @@ const AIPlanner = () => {
           background:
             radial-gradient(circle at top left, rgba(237, 71, 5, 0.14), transparent 24%),
             linear-gradient(180deg, #04142d 0%, #071b3e 38%, #1a3a6b 42%, #f5f8fc 46%, #ffffff 100%);
+        }
+
+        .ai-preview-section {
+          position: relative;
+        }
+
+        .ai-preview-shell {
+          position: relative;
+          z-index: 1;
         }
 
         .ai-hero-section {
@@ -561,7 +570,7 @@ const AIPlanner = () => {
           font-size: 1.04rem;
         }
 
-        /* Preview section heading — white text on dark bg */
+        /* Preview section heading on dark background */
         .ai-section-heading--dark h2 {
           color: #ffffff;
         }
@@ -1216,11 +1225,27 @@ const AIPlanner = () => {
 
         @media (max-width: 767px) {
           .ai-planner-page {
-            background: linear-gradient(180deg, #04142d 0%, #0d2145 36%, #f6f8fc 40%, #ffffff 100%);
+            background: linear-gradient(180deg, #04142d 0%, #0d2145 34%, #f6f8fc 50%, #ffffff 100%);
           }
 
           .ai-hero-section {
             padding: 108px 0 56px;
+          }
+
+          .ai-preview-section {
+            margin-top: -12px;
+            padding-top: 72px;
+            background:
+              linear-gradient(180deg, rgba(13, 33, 69, 0.98) 0%, rgba(32, 59, 104, 0.94) 18%, #eef4fb 42%, #ffffff 100%);
+          }
+
+          .ai-preview-section::before {
+            content: '';
+            position: absolute;
+            inset: 0 0 auto;
+            height: 180px;
+            background: linear-gradient(180deg, rgba(4, 20, 45, 0.18), rgba(4, 20, 45, 0));
+            pointer-events: none;
           }
 
           .ai-hero-layout {
@@ -1279,6 +1304,16 @@ const AIPlanner = () => {
             font-size: 2rem;
           }
 
+          .ai-section-heading--dark h2 {
+            text-shadow: 0 8px 24px rgba(4, 20, 45, 0.28);
+          }
+
+          .ai-section-heading--dark p {
+            color: rgba(255, 255, 255, 0.88);
+            max-width: 32rem;
+            margin-inline: auto;
+          }
+
           .ai-shell-content {
             padding: 14px;
             gap: 14px;
@@ -1320,6 +1355,18 @@ const AIPlanner = () => {
             padding: 24px 18px;
             border-radius: 24px;
             gap: 20px;
+          }
+        }
+
+        @media (max-width: 576px) {
+          .ai-preview-section {
+            padding-top: 84px;
+            background:
+              linear-gradient(180deg, rgba(13, 33, 69, 0.99) 0%, rgba(33, 62, 108, 0.96) 22%, #eef4fb 49%, #ffffff 100%);
+          }
+
+          .ai-preview-section::before {
+            height: 210px;
           }
         }
       `}</style>

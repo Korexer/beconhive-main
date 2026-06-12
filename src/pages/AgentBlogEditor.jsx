@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../utils/supabaseClient';
-import { useAuth } from '../utils/AuthContext';
+import { useAuth } from '../utils/useAuth';
 import { 
   Image as ImageIcon, 
   Video, 
@@ -34,7 +34,6 @@ const AgentBlogEditor = () => {
   const navigate = useNavigate();
   
   const editorRef = useRef(null);
-  const fileInputRef = useRef(null);
   
   const [formData, setFormData] = useState({
     title: '',
@@ -50,37 +49,7 @@ const AgentBlogEditor = () => {
   const [storageError, setStorageError] = useState(null);
   const [lastSelection, setLastSelection] = useState(null);
 
-  useEffect(() => {
-    if (!loading && (!user || profile?.role !== 'agent')) {
-       navigate('/dashboard');
-    }
-  }, [user, profile, loading, navigate]);
-
-  useEffect(() => {
-    if (id !== 'new') {
-      const fetchPost = async () => {
-        const { data, error } = await supabase.from('blogs').select('*').eq('id', id).single();
-        if (data) {
-          setFormData({
-            title: data.title || '',
-            slug: data.slug || '',
-            meta_description: data.meta_description || '',
-            image_url: data.image_url || ''
-          });
-          if (editorRef.current) {
-            editorRef.current.innerHTML = data.content || '';
-          }
-        } else {
-          alert('Blog post not found!');
-          navigate('/dashboard');
-        }
-      };
-      fetchPost();
-    }
-    fetchMedia();
-  }, [id, navigate]);
-
-  const fetchMedia = async () => {
+  async function fetchMedia() {
     setStorageError(null);
     try {
       const { data, error } = await supabase.storage.from('blog_media').list('', {
@@ -104,7 +73,43 @@ const AgentBlogEditor = () => {
     } catch (err) {
       setStorageError(err.message);
     }
-  };
+  }
+
+  useEffect(() => {
+    if (!loading && (!user || profile?.role !== 'agent')) {
+       navigate('/dashboard');
+    }
+  }, [user, profile, loading, navigate]);
+
+  useEffect(() => {
+    if (id !== 'new') {
+      const fetchPost = async () => {
+        const { data } = await supabase.from('blogs').select('*').eq('id', id).single();
+        if (data) {
+          setFormData({
+            title: data.title || '',
+            slug: data.slug || '',
+            meta_description: data.meta_description || '',
+            image_url: data.image_url || ''
+          });
+          if (editorRef.current) {
+            editorRef.current.innerHTML = data.content || '';
+          }
+        } else {
+          alert('Blog post not found!');
+          navigate('/dashboard');
+        }
+      };
+      fetchPost();
+    }
+    const mediaRefreshFrame = window.requestAnimationFrame(() => {
+      fetchMedia();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(mediaRefreshFrame);
+    };
+  }, [id, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -146,7 +151,7 @@ const AgentBlogEditor = () => {
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
     
-    const { data, error } = await supabase.storage.from('blog_media').upload(fileName, file);
+    const { error } = await supabase.storage.from('blog_media').upload(fileName, file);
     
     if (error) {
       alert(`Upload Failed: ${error.message}`);

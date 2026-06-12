@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { servicesData } from '../data/services';
 import { Check, Star } from 'lucide-react';
-import { useAuth } from '../utils/AuthContext';
+import { useAuth } from '../utils/useAuth';
 import { supabase } from '../utils/supabaseClient';
 
 const NGN_EXCHANGE_RATE = 1550; // Standard USD to NGN rate
@@ -10,14 +10,15 @@ const FLUTTERWAVE_PUB = import.meta.env.VITE_FLUTTERWAVE_PUBLIC_KEY;
 
 // Dedicated Purchase button handling its own Flutterwave configuration natively via inline JS
 const PurchaseButton = ({ pkgName, service, user, onSuccessCallback, className }) => {
-  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(
+    Boolean(document.getElementById('flutterwave-script') && window.FlutterwaveCheckout)
+  );
   const amountUsd = service.packages[pkgName.toLowerCase()].price;
   const amountNgn = amountUsd * NGN_EXCHANGE_RATE;
 
   useEffect(() => {
     // Dynamically load Flutterwave script for ultra-fast bundle performance
     if (document.getElementById('flutterwave-script')) {
-      setScriptLoaded(true);
       return;
     }
     const script = document.createElement('script');
@@ -26,6 +27,10 @@ const PurchaseButton = ({ pkgName, service, user, onSuccessCallback, className }
     script.async = true;
     script.onload = () => setScriptLoaded(true);
     document.body.appendChild(script);
+
+    return () => {
+      script.onload = null;
+    };
   }, []);
 
   const handleClick = () => {
@@ -35,6 +40,10 @@ const PurchaseButton = ({ pkgName, service, user, onSuccessCallback, className }
     }
     if (!scriptLoaded || !window.FlutterwaveCheckout) {
       alert("Payment gateway is still loading, please wait a second.");
+      return;
+    }
+    if (!FLUTTERWAVE_PUB) {
+      alert('Payment is not available right now. Please contact support.');
       return;
     }
     

@@ -8,14 +8,10 @@ const Blog = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchBlogs();
-  }, []);
-
-  const fetchBlogs = async () => {
+  async function fetchBlogs() {
     setLoading(true);
     // Fetch specifically published blogs, limited to 6, ordered purely by newest
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('blogs')
       .select(`id, title, content, meta_description, slug, image_url, created_at, views, author_id, profiles(full_name)`)
       .eq('status', 'published')
@@ -24,7 +20,11 @@ const Blog = () => {
 
     if (data) setBlogs(data);
     setLoading(false);
-  };
+  }
+
+  useEffect(() => {
+    fetchBlogs();
+  }, []);
 
   const getExcerpt = (blog) => {
     if (blog.meta_description) return blog.meta_description;
@@ -127,11 +127,5 @@ const Blog = () => {
     </div>
   );
 };
-
-const blogStyles = `
-  .blog-read-more-btn:hover {
-    color: var(--primary-blue) !important;
-  }
-`;
 
 export default Blog;
