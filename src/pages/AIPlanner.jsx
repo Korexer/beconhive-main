@@ -1,16 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  BarChart3,
   BrainCircuit,
-  CheckCircle2,
-  ChevronRight,
-  Download,
   FileText,
-  FolderUp,
-  LayoutDashboard,
-  LineChart,
-  Settings,
-  Sparkles,
   TrendingUp,
 } from 'lucide-react';
 import { supabase } from '../utils/supabaseClient';
@@ -51,225 +42,7 @@ const aiPlannerFeatures = [
   },
 ];
 
-const dashboardNavItems = [
-  { label: 'Dashboard', icon: <LayoutDashboard size={16} /> },
-  { label: 'Business Plans', icon: <FileText size={16} /> },
-  { label: 'Financial Models', icon: <BarChart3 size={16} /> },
-  { label: 'Settings', icon: <Settings size={16} /> },
-];
 
-const DashboardShell = ({ children, eyebrow, title, subtitle }) => (
-  <div className="ai-shell">
-    <aside className="ai-shell-sidebar">
-      <div className="ai-brand-block">
-        <div className="ai-brand-icon">
-          <Sparkles size={18} />
-        </div>
-        <div>
-          <div className="ai-brand-title">Beconhive AI</div>
-          <div className="ai-brand-subtitle">Planner Beta</div>
-        </div>
-      </div>
-
-      <div className="ai-shell-nav">
-        {dashboardNavItems.map((item, index) => (
-          <div key={item.label} className={`ai-shell-nav-item ${index === 0 ? 'active' : ''}`}>
-            {item.icon}
-            <span>{item.label}</span>
-          </div>
-        ))}
-      </div>
-
-      <div className="ai-sidebar-note">
-        <div className="ai-sidebar-note-label">Current run</div>
-        <strong>Series A funding pack</strong>
-        <span>7 assets generated</span>
-      </div>
-    </aside>
-
-    <div className="ai-shell-content">
-      <div className="ai-shell-topbar">
-        <div>
-          <div className="ai-shell-eyebrow">{eyebrow}</div>
-          <h3>{title}</h3>
-          <p>{subtitle}</p>
-        </div>
-        <div className="ai-live-pill">
-          <span className="ai-live-dot" />
-          AI engine live
-        </div>
-      </div>
-      {children}
-    </div>
-  </div>
-);
-
-const OnboardingPreview = () => (
-  <DashboardShell
-    eyebrow="Slide 1"
-    title="Smart onboarding for messy startup inputs"
-    subtitle="Founders drop in raw notes, market data, and pitch material. The system turns that into a structured planning brief."
-  >
-    <div className="ai-onboarding-grid">
-      <div className="ai-card">
-        <div className="ai-card-header">
-          <span>Business profile</span>
-          <CheckCircle2 size={16} />
-        </div>
-        <div className="ai-input-stack">
-          <label>
-            Business name
-            <div className="ai-input-box">Beconhive AI</div>
-          </label>
-          <label>
-            Industry
-            <div className="ai-input-box">AI planning software</div>
-          </label>
-          <label>
-            Goal
-            <div className="ai-input-box">Raise pre-seed capital in Q3 2026</div>
-          </label>
-        </div>
-      </div>
-
-      <div className="ai-card ai-card-highlight">
-        <div className="ai-upload-header">
-          <FolderUp size={18} />
-          <span>Upload pitch deck or raw financial data</span>
-        </div>
-        <div className="ai-upload-zone">
-          <div className="ai-upload-pill">deck_v4.pdf</div>
-          <div className="ai-upload-pill">forecast_assumptions.xlsx</div>
-          <div className="ai-upload-action">Drop files here or browse securely</div>
-        </div>
-        <div className="ai-checklist">
-          <div><CheckCircle2 size={16} /> Market summary mapped</div>
-          <div><CheckCircle2 size={16} /> Cost assumptions parsed</div>
-          <div><CheckCircle2 size={16} /> Funding goals detected</div>
-        </div>
-      </div>
-    </div>
-  </DashboardShell>
-);
-
-const ModelingPreview = () => (
-  <DashboardShell
-    eyebrow="Slide 2"
-    title="Predictive financial engine in motion"
-    subtitle="Scenario modeling updates instantly as the AI builds your revenue paths, burn forecast, and break-even logic."
-  >
-    <div className="ai-metrics-row">
-      <div className="ai-metric-card">
-        <span>Projected ARR</span>
-        <strong>$1.28M</strong>
-        <small>Year 3 estimate</small>
-      </div>
-      <div className="ai-metric-card">
-        <span>Gross margin</span>
-        <strong>74%</strong>
-        <small>Model confidence high</small>
-      </div>
-      <div className="ai-metric-card">
-        <span>Break-even</span>
-        <strong>Month 19</strong>
-        <small>Based on current hiring plan</small>
-      </div>
-    </div>
-
-    <div className="ai-chart-grid">
-      <div className="ai-card">
-        <div className="ai-card-header">
-          <span>3-year revenue projection</span>
-          <BarChart3 size={16} />
-        </div>
-        <div className="ai-bar-chart" role="img" aria-label="3-year revenue projection chart">
-          <div className="bar bar-one"><span /></div>
-          <div className="bar bar-two"><span /></div>
-          <div className="bar bar-three"><span /></div>
-        </div>
-        <div className="ai-bar-labels">
-          <span>Year 1</span>
-          <span>Year 2</span>
-          <span>Year 3</span>
-        </div>
-      </div>
-      <div className="ai-card">
-        <div className="ai-card-header">
-          <span>Cash flow health</span>
-          <LineChart size={16} />
-        </div>
-        <div className="ai-line-chart">
-          <div className="ai-line ai-line-blue" />
-          <div className="ai-line ai-line-orange" />
-        </div>
-      </div>
-      <div className="ai-card ai-break-even-card">
-        <div className="ai-card-header">
-          <span>Break-even analysis</span>
-          <TrendingUp size={16} />
-        </div>
-        <div className="ai-break-even-content">
-          <div className="ai-break-even-ring">82%</div>
-          <div className="ai-break-even-copy">
-            <strong>Investor-ready scenario</strong>
-            <p>Best-fit pricing model reaches operating break-even faster than the baseline case.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </DashboardShell>
-);
-
-const ExportPreview = () => (
-  <DashboardShell
-    eyebrow="Slide 3"
-    title="One-click export for investors and lenders"
-    subtitle="Generate a complete business plan package with a polished document view and downloadable finance files."
-  >
-    <div className="ai-export-grid">
-      <div className="ai-card">
-        <div className="ai-card-header">
-          <span>Business plan structure</span>
-          <FileText size={16} />
-        </div>
-        <div className="ai-toc-list">
-          {[
-            'Executive Summary',
-            'Problem & Market Gap',
-            'Product & GTM Strategy',
-            'Financial Forecasts',
-            'Funding Ask & Use of Funds',
-          ].map((item) => (
-            <div key={item} className="ai-toc-item">
-              <ChevronRight size={14} />
-              <span>{item}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="ai-card ai-document-card">
-        <div className="ai-document-toolbar">
-          <span>Investor-Ready Business Plan</span>
-          <button type="button" className="ai-export-button" disabled title="Available after launch">
-            <Download size={16} />
-            Download PDF / Export to Excel
-          </button>
-        </div>
-        <div className="ai-document-viewer">
-          <div className="ai-document-title">Beconhive AI Growth Plan</div>
-          <div className="ai-document-block large" />
-          <div className="ai-document-columns">
-            <div className="ai-document-block" />
-            <div className="ai-document-block" />
-          </div>
-          <div className="ai-document-block medium" />
-          <div className="ai-document-footer">Version 1.0 generated for founder review</div>
-        </div>
-      </div>
-    </div>
-  </DashboardShell>
-);
 
 const WaitlistForm = ({ source, buttonLabel, compact = false }) => {
   const [email, setEmail] = useState('');
@@ -392,7 +165,7 @@ const AIPlanner = () => {
         <div className="container ai-hero-layout">
           <div className="ai-hero-copy">
             <div className="ai-hero-badge">Launching Q3 2026. Built for ambitious founders.</div>
-            <h1>Beconhive AI: Automated Business Planning & Predictive Financial Modeling.</h1>
+            <h1>Automated Business Planning & Predictive Financial Modeling</h1>
             <p>
               Upload raw business inputs, founder notes, or spreadsheet assumptions and generate investor-ready
               financial forecasts, cash-flow statements, and structured business plans in under 10 minutes.
@@ -454,11 +227,11 @@ const AIPlanner = () => {
 
       <section className="section-padding ai-preview-section">
         <div className="container">
-          <div className="ai-section-heading">
-            <span className="ai-section-tag">Product Preview</span>
-            <h2>A Sneak Peek Inside the Engine.</h2>
+          <div className="ai-section-heading ai-section-heading--dark">
+            <span className="ai-section-tag ai-section-tag--orange">Product Preview</span>
+            <h2>A Sneak Peek Inside the Engine</h2>
             <p>
-              Swipe sideways to explore the product screens. The preview stays still until the user moves through it.
+              Browse the core product screens below — from smart onboarding through live financial modeling to export-ready outputs.
             </p>
           </div>
 
@@ -475,40 +248,34 @@ const AIPlanner = () => {
             ))}
           </div>
 
-          <div className="ai-preview-scroll-hint">
-            <div className="ai-scroll-line" />
-            <span>Slide sideways</span>
-            <div className="ai-scroll-line" />
-          </div>
-
           <div className="ai-preview-rail" ref={railRef} onScroll={handleRailScroll}>
             <article className="ai-preview-slide">
-              <div className="ai-preview-copy">
-                <h3>{previewSlides[0].title}</h3>
-                <p>{previewSlides[0].description}</p>
-              </div>
               <div className="ai-preview-stage">
-                <OnboardingPreview />
+                <img
+                  src="/ai_planner_onboarding.png"
+                  alt="Smart onboarding screen"
+                  className="ai-preview-img"
+                />
               </div>
             </article>
 
             <article className="ai-preview-slide">
-              <div className="ai-preview-copy">
-                <h3>{previewSlides[1].title}</h3>
-                <p>{previewSlides[1].description}</p>
-              </div>
               <div className="ai-preview-stage">
-                <ModelingPreview />
+                <img
+                  src="/ai_planner_financial.png"
+                  alt="Financial modeling screen"
+                  className="ai-preview-img"
+                />
               </div>
             </article>
 
             <article className="ai-preview-slide">
-              <div className="ai-preview-copy">
-                <h3>{previewSlides[2].title}</h3>
-                <p>{previewSlides[2].description}</p>
-              </div>
               <div className="ai-preview-stage">
-                <ExportPreview />
+                <img
+                  src="/ai_planner_export.png"
+                  alt="Export-ready output screen"
+                  className="ai-preview-img"
+                />
               </div>
             </article>
           </div>
@@ -567,7 +334,7 @@ const AIPlanner = () => {
         .ai-planner-page {
           background:
             radial-gradient(circle at top left, rgba(237, 71, 5, 0.14), transparent 24%),
-            linear-gradient(180deg, #04142d 0%, #071b3e 22%, #1a3a6b 23.5%, #f5f8fc 27%, #ffffff 100%);
+            linear-gradient(180deg, #04142d 0%, #071b3e 38%, #1a3a6b 42%, #f5f8fc 46%, #ffffff 100%);
         }
 
         .ai-hero-section {
@@ -794,6 +561,22 @@ const AIPlanner = () => {
           font-size: 1.04rem;
         }
 
+        /* Preview section heading — white text on dark bg */
+        .ai-section-heading--dark h2 {
+          color: #ffffff;
+        }
+
+        .ai-section-heading--dark p {
+          color: rgba(255, 255, 255, 0.78);
+        }
+
+        /* Orange badge variant */
+        .ai-section-tag--orange {
+          background: var(--primary-orange) !important;
+          border-color: var(--primary-orange) !important;
+          color: #ffffff !important;
+        }
+
         .ai-preview-label-row {
           display: flex;
           gap: 10px;
@@ -849,22 +632,12 @@ const AIPlanner = () => {
           width: 28px;
         }
 
-        .ai-preview-scroll-hint {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 12px;
-          margin-bottom: 18px;
-          color: rgba(4, 20, 45, 0.6);
-          font-size: 0.92rem;
-          text-transform: uppercase;
-          letter-spacing: 0.08em;
-        }
-
-        .ai-scroll-line {
-          width: 48px;
-          height: 1px;
-          background: rgba(10, 88, 202, 0.18);
+        /* Image slide */
+        .ai-preview-img {
+          width: 100%;
+          height: auto;
+          display: block;
+          border-radius: 20px;
         }
 
         .ai-preview-rail {
@@ -891,25 +664,10 @@ const AIPlanner = () => {
           scroll-snap-align: start;
         }
 
-        .ai-preview-copy {
-          margin-bottom: 16px;
-        }
-
-        .ai-preview-copy h3 {
-          font-size: 1.5rem;
-          margin-bottom: 6px;
-        }
-
-        .ai-preview-copy p {
-          color: rgba(4, 20, 45, 0.68);
-        }
-
         .ai-preview-stage {
-          background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(240,245,250,0.98));
-          border: 1px solid rgba(10, 88, 202, 0.1);
-          box-shadow: 0 24px 80px rgba(10, 88, 202, 0.12);
-          border-radius: 30px;
-          padding: 18px;
+          border-radius: 24px;
+          overflow: hidden;
+          box-shadow: 0 24px 80px rgba(4, 20, 45, 0.22);
         }
 
         .ai-mobile-only {
@@ -1458,7 +1216,7 @@ const AIPlanner = () => {
 
         @media (max-width: 767px) {
           .ai-planner-page {
-            background: linear-gradient(180deg, #04142d 0%, #0d2145 18%, #f6f8fc 18.1%, #ffffff 100%);
+            background: linear-gradient(180deg, #04142d 0%, #0d2145 36%, #f6f8fc 40%, #ffffff 100%);
           }
 
           .ai-hero-section {
@@ -1500,8 +1258,7 @@ const AIPlanner = () => {
             grid-template-columns: 1fr;
           }
 
-          .ai-hero-side-card,
-          .ai-preview-stage {
+          .ai-hero-side-card {
             border-radius: 24px;
           }
 
@@ -1509,9 +1266,6 @@ const AIPlanner = () => {
             flex-basis: calc(100vw - 32px);
           }
 
-          .ai-preview-stage {
-            padding: 14px;
-          }
 
           .ai-mobile-only {
             display: block;
